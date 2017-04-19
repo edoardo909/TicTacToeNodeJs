@@ -18,13 +18,14 @@
         android:roundIcon="@drawable/admiral_ackbar"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainMenu">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.GameActivity"></activity>
+        <activity android:name=".activities.SinglePlayer" />
         <!--
    Set custom default icon. This is used when no icon is set for incoming notification messages.
    See README(https://goo.gl/l4GJaQ) for more.
@@ -59,7 +60,7 @@
             </intent-filter>
         </service>
 
-
+        <activity android:name=".activities.MultiPlayer"></activity>
     </application>
 
 </manifest>

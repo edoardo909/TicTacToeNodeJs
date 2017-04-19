@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="it.parello.tictactoenodejs.activities.MainActivity">
+    tools:context="it.parello.tictactoenodejs.activities.MainMenu">
 
     <TextView
         android:id="@+id/menu_title"
@@ -13,24 +13,31 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textAlignment="center"
-        android:paddingTop="100dp"
+        android:paddingTop="150dp"
         android:textSize="30dp"
         android:text="@string/menu_title" />
 
     <Button
-        android:id="@+id/play"
+        android:id="@+id/play_single_player"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/play"
+        android:text="@string/play_single_player"
         android:layout_below="@id/menu_title"
         android:layout_marginTop="100dp"/>
+
+    <Button
+        android:id="@+id/play_multi_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/play_multi_player"
+        android:layout_below="@id/play_single_player"/>
 
     <Button
         android:id="@+id/statistics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/statistics"
-        android:layout_below="@id/play"/>
+        android:layout_below="@id/play_multi_player"/>
 
     <Button
         android:id="@+id/exit"
