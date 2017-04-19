@@ -14,16 +14,18 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import it.parello.tictactoenodejs.R;
+
 /**
- * Created by Parello on 13/04/2017.
+ * Created by Parello on 20/04/2017.
  */
 
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
 
-    private static final String URL = "http://192.168.1.220:8888/";
-
+//    private static final String URL = "http://192.168.1.220:8888/";
+    private final String URL = getString(R.string.server_url);
 
     String refreshedToken;
     @Override

@@ -1,6 +1,7 @@
 package it.parello.tictactoenodejs.activities;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -28,6 +29,8 @@ public class MainMenu extends AppCompatActivity {
         });
         statistics.setOnClickListener(l->{
             //TODO
+            Fragment statisticsFragment = getSupportFragmentManager().findFragmentById(R.id.statistics_fragment);
+            getSupportFragmentManager().beginTransaction().add(statisticsFragment,"statisticsFragment").commit();
         });
         exit.setOnClickListener(l->{
             onBackPressed();
@@ -43,6 +46,10 @@ public class MainMenu extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        super.onBackPressed();
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0){
+            //TODO notifica che vince l'altro
+        }else {
+            super.onBackPressed();
+        }
     }
 }
