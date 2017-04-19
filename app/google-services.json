@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "375315062247",
+    "firebase_url": "https://tictactoenodejs.firebaseio.com",
+    "project_id": "tictactoenodejs",
+    "storage_bucket": "tictactoenodejs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375315062247:android:d052fe3e93aced4a",
+        "android_client_info": {
+          "package_name": "it.parello.tictactoenodejs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "375315062247-s7n9hv2pv6eve1n6vh2idvhr5p2g1iuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBVroaGWnYbOUio6Yjj2H87CAvxbu0n28"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
