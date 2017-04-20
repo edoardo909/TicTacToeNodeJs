@@ -24,8 +24,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
 
-//    private static final String URL = "http://192.168.1.220:8888/";
-    private final String URL = getString(R.string.server_url);
+    private static final String URL = "http://192.168.1.220:8888/";
 
     String refreshedToken;
     @Override
@@ -65,6 +64,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
             stream = connection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"), 8);
             String result = reader.readLine();
+            Log.e(TAG,"RESULT" +result);
             return result;
 
         } catch (Exception e) {

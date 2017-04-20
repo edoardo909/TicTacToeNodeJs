@@ -22,5 +22,4 @@
     <string name="play_multi_player">Play with a Friend</string>
     <string name="statistics">Statisics</string>
     <string name="exit">Exit Game</string>
-    <string name="server_url">http://192.168.1.220:8888/</string>
 </resources>
