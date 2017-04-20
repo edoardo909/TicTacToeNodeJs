@@ -5,9 +5,9 @@ var server = express();
 var serviceAccount = require("./TicTacToeNodeJs-da99a621f809.json");
 var mongoClient = require("mongodb").MongoClient;
 
-var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
+var dbUrl = 'mongodb://localhost:27017/androidTokens';
 
-var tokens = [];
+
 
 function writeTokenToDatabase(request){
 	mongoClient.connect(dbUrl, function(error, db){
@@ -23,7 +23,7 @@ function writeTokenToDatabase(request){
 	
 }
 
-
+function readTokenToDatabase(request){
 	mongoClient.connect(dbUrl, function(error, db){
 		var collection = db.collection('token');
 		if(error) throw error;
@@ -31,13 +31,15 @@ function writeTokenToDatabase(request){
 			if (error){
 				throw error;
 			}else {
+				var tokens = [];
 				tokens = items;
+				sendNotification(tokens);
 				console.log("Tokens on db: ---> ", tokens);
 			}
 		});
 		
 });
-
+}
 /*.forEach(function(obj){
 			console.log(obj);
 		});*/
@@ -61,15 +63,19 @@ server.use(bodyParser.urlencoded({
   extended: true
 }));
 
-server.get("/", function(request, response){
-	console.log("Request Body: " , request.body);
 
-	response.send('Our first route is working: ' + JSON.stringify(request.body, null, 2));
+ function sendNotification(tokens){
+	 response.send('Our first route is working: ' + JSON.stringify(request.body, null, 2));
 	admin.messaging().sendToDevice(tokens, payload).then(function(response){
 		console.log("Successfully sent message: ",response);
 	}).catch(function(error){
 		console.log("Error sending message: ", error);
 	});
+ }
+server.get("/", function(request, response){
+	console.log("Request Body: " , request.body);
+
+	
 });
 		
 server.post("/", function(request, response){
@@ -82,6 +88,6 @@ server.post("/", function(request, response){
 	console.log("Request Body (post): " , request.body);
 });		
 
-server.listen(8888, '192.168.1.220', function(){
-	console.log("Server started on http://192.168.1.220:8888/");
+server.listen(8888, '192.168.10.21', function(){
+	console.log("Server started on http://192.168.10.21:8888/");
 });
