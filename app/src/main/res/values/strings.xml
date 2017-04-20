@@ -18,7 +18,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_title">Tic Tac Toe</string>
-    <string name="play">Play!</string>
+    <string name="play_single_player">Single Player</string>
+    <string name="play_multi_player">Play with a Friend</string>
     <string name="statistics">Statisics</string>
     <string name="exit">Exit Game</string>
 </resources>

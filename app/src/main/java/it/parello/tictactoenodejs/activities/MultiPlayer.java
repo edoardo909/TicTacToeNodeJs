@@ -1,29 +1,25 @@
 package it.parello.tictactoenodejs.activities;
 
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.service.Cpu;
-import it.parello.tictactoenodejs.service.MyClickListener;
 
-public class GameActivity extends AppCompatActivity {
+public class MultiPlayer extends AppCompatActivity {
 
     public Button restart;
     public static int mark[][];
     public static int i, j = 0;
     public static Button b[][];
-    public static Cpu cpu;
     public static TextView textView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
-        setBoard();
+        setContentView(R.layout.activity_single_player);
         restart = (Button) findViewById(R.id.restart);
         restart.setOnClickListener(l->{
             setBoard();
@@ -31,7 +27,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setBoard() {
-        cpu = new Cpu();
         b = new Button[4][4];
         mark = new int[4][4];
         b[0][2] = (Button) findViewById(R.id.b1);
@@ -55,7 +50,9 @@ public class GameActivity extends AppCompatActivity {
         textView.setText("Click a button to start.");
         for (i = 0; i <= 2; i++) {
             for (j = 0; j <= 2; j++) {
-                b[i][j].setOnClickListener(new MyClickListener(i, j));
+                b[i][j].setOnClickListener(l->{
+                    //TODO
+                });
                 if (!b[i][j].isEnabled()) {
                     b[i][j].setText(" ");
                     b[i][j].setEnabled(true);
@@ -64,6 +61,3 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 }
-
-
-

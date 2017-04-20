@@ -2,11 +2,11 @@ package it.parello.tictactoenodejs.service;
 
 import java.util.Random;
 
-import static it.parello.tictactoenodejs.activities.GameActivity.b;
-import static it.parello.tictactoenodejs.activities.GameActivity.i;
-import static it.parello.tictactoenodejs.activities.GameActivity.j;
-import static it.parello.tictactoenodejs.activities.GameActivity.mark;
-import static it.parello.tictactoenodejs.activities.GameActivity.textView;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.b;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.i;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.j;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.mark;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.textView;
 
 /**
  * Created by Parello on 12/04/2017.

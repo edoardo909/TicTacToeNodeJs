@@ -3,10 +3,10 @@ package it.parello.tictactoenodejs.service;
 import android.os.Handler;
 import android.view.View;
 
-import static it.parello.tictactoenodejs.activities.GameActivity.b;
-import static it.parello.tictactoenodejs.activities.GameActivity.cpu;
-import static it.parello.tictactoenodejs.activities.GameActivity.mark;
-import static it.parello.tictactoenodejs.activities.GameActivity.textView;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.b;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.cpu;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.mark;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.textView;
 
 /**
  * Created by Parello on 12/04/2017.

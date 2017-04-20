@@ -16,7 +16,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import it.parello.tictactoenodejs.R;
-import it.parello.tictactoenodejs.activities.GameActivity;
+import it.parello.tictactoenodejs.activities.SinglePlayer;
 
 
 /**
@@ -82,7 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, GameActivity.class);
+        Intent intent = new Intent(this, SinglePlayer.class);
         intent.putExtra("",MessageReceived);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,

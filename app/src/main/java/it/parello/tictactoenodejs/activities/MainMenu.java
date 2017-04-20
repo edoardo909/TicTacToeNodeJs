@@ -7,9 +7,9 @@ import android.widget.Button;
 
 import it.parello.tictactoenodejs.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainMenu extends AppCompatActivity {
 
-    Button play,statistics,exit;
+    Button playAlone,playOnline, statistics,exit;
     Intent intent;
 
     @Override
@@ -17,8 +17,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
-        play.setOnClickListener(l->{
-            intent = new Intent(this,GameActivity.class);
+        playAlone.setOnClickListener(l->{
+            intent = new Intent(this,SinglePlayer.class);
+            startActivity(intent);
+        });
+        playOnline.setOnClickListener(l->{
+            //TODO
+            intent = new Intent(this,MultiPlayer.class);
             startActivity(intent);
         });
         statistics.setOnClickListener(l->{
@@ -30,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void findViews(){
-        play = (Button) findViewById(R.id.play);
+        playAlone = (Button) findViewById(R.id.play_single_player);
+        playOnline = (Button) findViewById(R.id.play_multi_player);
         statistics = (Button) findViewById(R.id.statistics);
         exit = (Button) findViewById(R.id.exit);
     }
