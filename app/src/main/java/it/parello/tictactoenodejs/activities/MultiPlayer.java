@@ -6,7 +6,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
-import it.parello.tictactoenodejs.service.Cpu;
 
 public class MultiPlayer extends AppCompatActivity {
 

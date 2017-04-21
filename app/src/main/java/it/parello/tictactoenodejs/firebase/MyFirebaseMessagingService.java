@@ -20,7 +20,7 @@ import it.parello.tictactoenodejs.activities.SinglePlayer;
 
 
 /**
- * Created by Parello on 13/04/2017.
+ * Created by Parello on 20/04/2017.
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
