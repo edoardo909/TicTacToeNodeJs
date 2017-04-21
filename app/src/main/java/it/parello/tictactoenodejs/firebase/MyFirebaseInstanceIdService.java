@@ -24,6 +24,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
 
+    //Set with your local ip address and the port you selected in the node server.js
     private static final String URL = "http://192.168.1.220:8888/";
 
     String refreshedToken;
@@ -51,20 +52,17 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
             Log.d(TAG,"Connected to " + URL);
-            JSONObject input = new JSONObject();
-            input.put("token", token);
-            connection.connect();
-            Log.e("TOKEN SENT TO SERVER", input.toString());
+//            connection.connect();
+            Log.e("TOKEN SENT TO SERVER", token);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
-            outputStreamWriter.write(input.toString());
-            Log.e(TAG,input.toString());
+            outputStreamWriter.write(token);
             outputStreamWriter.flush();
             outputStreamWriter.close();
 
             stream = connection.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"), 8);
             String result = reader.readLine();
-            Log.e(TAG,"RESULT" +result);
+            Log.e(TAG,"RESULT " +result);
             return result;
 
         } catch (Exception e) {
