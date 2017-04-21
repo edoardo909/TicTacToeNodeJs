@@ -9,11 +9,11 @@ import it.parello.tictactoenodejs.R;
 
 public class MultiPlayer extends AppCompatActivity {
 
-    public Button restart;
-    public static int mark[][];
-    public static int i, j = 0;
-    public static Button b[][];
-    public static TextView textView;
+    Button restart;
+    int mark[][];
+    int i, j = 0;
+    Button b[][];
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,7 @@ public class MultiPlayer extends AppCompatActivity {
     }
 
     private void setBoard() {
+        //TODO waitForOtherPlayer()
         b = new Button[4][4];
         mark = new int[4][4];
         b[0][2] = (Button) findViewById(R.id.b1);
@@ -59,4 +60,21 @@ public class MultiPlayer extends AppCompatActivity {
             }
         }
     }
+
+    private void waitForOpponentToConnect(){
+        //TODO
+    }
+
+    private void listenForIncomingGameData(){
+        //TODO
+    }
+
+    private void waitForOpponentMove(){
+        //TODO
+    }
+
+    private boolean isGameOver(){
+        return false;
+    }
+
 }

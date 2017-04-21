@@ -61,13 +61,18 @@ function sendNotification(request, response, tokens){
 	});
 }
  
-server.get("/", function(request, response){
+ server.get("/", function(request, response){
+	 console.log("HOMEPAGE")
+	 response.send("HomePage.<br />Still haven't decided what to do with it. <br />-try going to '/token' for now")
+ });
+ 
+server.get("/token", function(request, response){
 	readTokenFromDatabase(request, response);
 	console.log("Request Body: " , request.body);
 	
 });
 		
-server.post("/", function(request, response){
+server.post("/token", function(request, response){
 	response.send("You sent a post request =] ")
 	
 	writeTokenToDatabase(request);

@@ -1,9 +1,7 @@
-package it.parello.tictactoenodejs.firebase;
+package it.parello.tictactoenodejs.service;
 
+import android.os.AsyncTask;
 import android.util.Log;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import org.json.JSONObject;
 
@@ -11,41 +9,23 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import it.parello.tictactoenodejs.R;
+import it.parello.tictactoenodejs.firebase.MyFirebaseInstanceIdService;
 
 /**
- * Created by Parello on 20/04/2017.
+ * Created by Parello on 21/04/2017.
  */
 
-public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
+public class SendGameDataTask extends AsyncTask<Void,Void,JSONObject> {
 
-    private static final String TAG = "MyFirebaseIIDService";
+    private static final String TAG = "SendGameDataTask";
+    private static final String URL = "http://192.168.1.220:8888/";
 
-    //Set with your local ip address and the port you selected in the node server.js
-    private static final String URL = "http://192.168.1.220:8888/token";
-
-    public static String getRefreshedToken() {
-        return refreshedToken;
-    }
-
-    static String refreshedToken;
     @Override
-    public void onTokenRefresh() {
-        // Get updated InstanceID token.
-        refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
-    }
-
-
-    public String sendRegistrationToServer(String token){
+    protected JSONObject doInBackground(Void... voids) { //TODO UNDER DEVELOPMENT
         HttpURLConnection connection = null;
         URL url;
         InputStream stream = null;
@@ -57,9 +37,13 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
             connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
             Log.d(TAG,"Connected to " + URL);
 //            connection.connect();
-            Log.e("TOKEN SENT TO SERVER", token);
+            JSONObject gameData = new JSONObject();
+//            gameData.put("player_id", MyFirebaseInstanceIdService.getRefreshedToken());
+//            gameData.put("game_id",);
+//            gameData.put("board_data", );
+//            gameData.put("winner",);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
-            outputStreamWriter.write(token);
+            outputStreamWriter.write("");
             outputStreamWriter.flush();
             outputStreamWriter.close();
 
@@ -67,7 +51,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"), 8);
             String result = reader.readLine();
             Log.e(TAG,"RESULT " +result);
-            return result;
+            return gameData;
 
         } catch (Exception e) {
             e.printStackTrace();
