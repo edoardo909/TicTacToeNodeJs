@@ -5,7 +5,7 @@ var server = express();
 var serviceAccount = require("./TicTacToeNodeJs-da99a621f809.json");
 var mongoClient = require("mongodb").MongoClient;
 
-var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
+var dbUrl = 'mongodb://localhost:27017/androidTokens';
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -66,6 +66,12 @@ function sendNotification(request, response, tokens){
 	 response.send("HomePage.<br />Still haven't decided what to do with it. <br />-try going to '/token' for now")
  });
  
+ server.post("/", function(request, response){
+	console.log("intercepting asyncTask");
+	response.send("intercepting asyncTask");
+	console.log("Request Body (post): " , request.body);
+ });
+ 
 server.get("/token", function(request, response){
 	readTokenFromDatabase(request, response);
 	console.log("Request Body: " , request.body);
@@ -82,6 +88,6 @@ server.post("/token", function(request, response){
 	console.log("Request Body (post): " , request.body);
 });		
 
-server.listen(8888, '192.168.1.220', function(){
-	console.log("Server started on http://192.168.1.220:8888/");
+server.listen(8888, function(){
+	console.log("Server started on http://localhost:8888/");
 });
