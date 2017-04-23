@@ -7,16 +7,16 @@ import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.service.Cpu;
-import it.parello.tictactoenodejs.service.MyClickListener;
+import it.parello.tictactoenodejs.service.SPClickListener;
 
 public class SinglePlayer extends AppCompatActivity {
 
     public Button restart;
-    public static int mark[][];
+    public static int spMark[][];
     public static int i, j = 0;
-    public static Button b[][];
+    public static Button spButtons[][];
     public static Cpu cpu;
-    public static TextView textView;
+    public static TextView spTextView;
     public boolean isInFront;
 
 
@@ -33,33 +33,33 @@ public class SinglePlayer extends AppCompatActivity {
 
     private void setBoard() {
         cpu = new Cpu();
-        b = new Button[4][4];
-        mark = new int[4][4];
-        b[0][2] = (Button) findViewById(R.id.b1);
-        b[0][1] = (Button) findViewById(R.id.b2);
-        b[0][0] = (Button) findViewById(R.id.b3);
-        b[1][2] = (Button) findViewById(R.id.b4);
-        b[1][1] = (Button) findViewById(R.id.b5);
-        b[1][0] = (Button) findViewById(R.id.b6);
-        b[2][2] = (Button) findViewById(R.id.b7);
-        b[2][1] = (Button) findViewById(R.id.b8);
-        b[2][0] = (Button) findViewById(R.id.b9);
+        spButtons = new Button[4][4];
+        spMark = new int[4][4];
+        spButtons[0][2] = (Button) findViewById(R.id.b1);
+        spButtons[0][1] = (Button) findViewById(R.id.b2);
+        spButtons[0][0] = (Button) findViewById(R.id.b3);
+        spButtons[1][2] = (Button) findViewById(R.id.b4);
+        spButtons[1][1] = (Button) findViewById(R.id.b5);
+        spButtons[1][0] = (Button) findViewById(R.id.b6);
+        spButtons[2][2] = (Button) findViewById(R.id.b7);
+        spButtons[2][1] = (Button) findViewById(R.id.b8);
+        spButtons[2][0] = (Button) findViewById(R.id.b9);
 
-        textView = (TextView) findViewById(R.id.dialogue);
+        spTextView = (TextView) findViewById(R.id.dialogue);
 
         for (i = 0; i <= 2; i++) {
             for (j = 0; j <= 2; j++)
-                mark[i][j] = 2;
+                spMark[i][j] = 2;
 
         }
 
-        textView.setText("Click a button to start.");
+        spTextView.setText("Click a button to start.");
         for (i = 0; i <= 2; i++) {
             for (j = 0; j <= 2; j++) {
-                b[i][j].setOnClickListener(new MyClickListener(i, j));
-                if (!b[i][j].isEnabled()) {
-                    b[i][j].setText(" ");
-                    b[i][j].setEnabled(true);
+                spButtons[i][j].setOnClickListener(new SPClickListener(i, j));
+                if (!spButtons[i][j].isEnabled()) {
+                    spButtons[i][j].setText(" ");
+                    spButtons[i][j].setEnabled(true);
                 }
             }
         }

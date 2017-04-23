@@ -61,24 +61,30 @@ function sendNotification(request, response, tokens){
 	});
 }
  
- server.get("/", function(request, response){
+ server.get("/home", function(request, response){
 	 console.log("HOMEPAGE")
 	 response.send("HomePage.<br />Still haven't decided what to do with it. <br />-try going to '/token' for now")
  });
  
- server.post("/", function(request, response){
+ server.post("/async", function(request, response){
 	console.log("intercepting asyncTask");
 	response.send("intercepting asyncTask");
 	console.log("Request Body (post): " , request.body);
  });
  
-server.get("/token", function(request, response){
+ server.get("/async", function(request, response){
+	console.log("getting async");
+	response.send("Getting asyncTask");
+	console.log("Request Body: " , request.body);
+	
+});
+server.get("/", function(request, response){
 	readTokenFromDatabase(request, response);
 	console.log("Request Body: " , request.body);
 	
 });
 		
-server.post("/token", function(request, response){
+server.post("/", function(request, response){
 	response.send("You sent a post request =] ")
 	
 	writeTokenToDatabase(request);
@@ -88,6 +94,6 @@ server.post("/token", function(request, response){
 	console.log("Request Body (post): " , request.body);
 });		
 
-server.listen(8888, function(){
-	console.log("Server started on http://localhost:8888/");
+server.listen(8888,'192.168.10.21', function(){
+	console.log("Server started on http://192.168.10.21:8888/");
 });

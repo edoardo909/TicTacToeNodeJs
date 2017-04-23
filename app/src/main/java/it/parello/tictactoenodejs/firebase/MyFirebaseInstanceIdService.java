@@ -25,7 +25,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
     private static final String TAG = "MyFirebaseIIDService";
 
     //Set with your local ip address and the port you selected in the node server.js
-    private static final String URL = "http://192.168.1.220:8888/token";
+    private static final String URL = "http://192.168.10.21:8888/";
 
     public static String getRefreshedToken() {
         return refreshedToken;

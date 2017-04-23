@@ -6,6 +6,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -19,14 +20,57 @@ import it.parello.tictactoenodejs.firebase.MyFirebaseInstanceIdService;
  * Created by Parello on 21/04/2017.
  */
 
-public class SendGameDataTask extends AsyncTask<Void,Void,JSONObject> {
+public class SendGameDataTask extends AsyncTask<String,Void,String> {
 
     private static final String TAG = "SendGameDataTask";
-    private static final String URL = "http://192.168.1.220:8888/";
+
 
     @Override
-    protected JSONObject doInBackground(Void... voids) { //TODO UNDER DEVELOPMENT
-        HttpURLConnection connection = null;
+    protected String doInBackground(String... params) { //TODO UNDER DEVELOPMENT
+        String data = "";
+
+        HttpURLConnection httpURLConnection = null;
+        try {
+
+            httpURLConnection = (HttpURLConnection) new URL(params[0]).openConnection();
+            httpURLConnection.setRequestMethod("POST");
+
+            httpURLConnection.setDoOutput(true);
+
+            DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+            wr.writeBytes("PostData=" + params[1]);
+            wr.flush();
+            wr.close();
+            Log.d(TAG,"sending gamedata");
+            InputStream in = httpURLConnection.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(in);
+
+            int inputStreamData = inputStreamReader.read();
+            while (inputStreamData != -1) {
+                char current = (char) inputStreamData;
+                inputStreamData = inputStreamReader.read();
+                data += current;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
+        }
+
+        return data;
+    }
+
+
+    @Override
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+        Log.e("TAG", result); // this is expecting a response code to be sent from your server upon receiving the POST data
+    }
+}
+/*
+HttpURLConnection connection = null;
         URL url;
         InputStream stream = null;
         try {
@@ -38,12 +82,12 @@ public class SendGameDataTask extends AsyncTask<Void,Void,JSONObject> {
             Log.d(TAG,"Connected to " + URL);
 //            connection.connect();
             JSONObject gameData = new JSONObject();
-//            gameData.put("player_id", MyFirebaseInstanceIdService.getRefreshedToken());
-//            gameData.put("game_id",);
-//            gameData.put("board_data", );
-//            gameData.put("winner",);
+            gameData.put("player_id", MyFirebaseInstanceIdService.getRefreshedToken());
+            gameData.put("game_id", gameId);
+            gameData.put("board_data", tempBoardData );
+            gameData.put("winner", false);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
-            outputStreamWriter.write("");
+            outputStreamWriter.write(gameData.toString());
             outputStreamWriter.flush();
             outputStreamWriter.close();
 
@@ -61,5 +105,4 @@ public class SendGameDataTask extends AsyncTask<Void,Void,JSONObject> {
             }
         }
         return null;
-    }
-}
+* */

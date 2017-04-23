@@ -1,34 +1,36 @@
 package it.parello.tictactoenodejs.service;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
-import static it.parello.tictactoenodejs.activities.SinglePlayer.b;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.spButtons;
 import static it.parello.tictactoenodejs.activities.SinglePlayer.cpu;
-import static it.parello.tictactoenodejs.activities.SinglePlayer.mark;
-import static it.parello.tictactoenodejs.activities.SinglePlayer.textView;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.spMark;
+import static it.parello.tictactoenodejs.activities.SinglePlayer.spTextView;
 
 /**
  * Created by Parello on 12/04/2017.
  */
 
-public class MyClickListener implements View.OnClickListener {
+public class SPClickListener implements View.OnClickListener {
     int x;
     int y;
+    private static final String TAG = "SPClickListener";
 
-
-    public MyClickListener(int x, int y) {
+    public SPClickListener(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
 
     public void onClick(View view) {
-        if (b[x][y].isEnabled()) {
-            b[x][y].setEnabled(false);
-            b[x][y].setText("O");//setBackground(getDrawable(R.drawable.rebels));
-            mark[x][y] = 0;
-            textView.setText("");
+        Log.d(TAG,"button "+ spButtons[x][y] + " clicked");
+        if (spButtons[x][y].isEnabled()) {
+            spButtons[x][y].setEnabled(false);
+            spButtons[x][y].setText("O");
+            spMark[x][y] = 0;
+            spTextView.setText("");
             if (!cpu.isGameOver()) {
                 final Handler handler = new Handler();
                 handler.postDelayed(()-> {

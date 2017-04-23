@@ -6,14 +6,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
+import it.parello.tictactoenodejs.service.MPClickListener;
 
 public class MultiPlayer extends AppCompatActivity {
 
     Button restart;
-    int mark[][];
-    int i, j = 0;
-    Button b[][];
-    TextView textView;
+    public static int mpMark[][];
+    public static int i, j = 0;
+    public static Button mpButtons[][];
+    public static TextView mpTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,35 +28,33 @@ public class MultiPlayer extends AppCompatActivity {
 
     private void setBoard() {
         //TODO waitForOtherPlayer()
-        b = new Button[4][4];
-        mark = new int[4][4];
-        b[0][2] = (Button) findViewById(R.id.b1);
-        b[0][1] = (Button) findViewById(R.id.b2);
-        b[0][0] = (Button) findViewById(R.id.b3);
-        b[1][2] = (Button) findViewById(R.id.b4);
-        b[1][1] = (Button) findViewById(R.id.b5);
-        b[1][0] = (Button) findViewById(R.id.b6);
-        b[2][2] = (Button) findViewById(R.id.b7);
-        b[2][1] = (Button) findViewById(R.id.b8);
-        b[2][0] = (Button) findViewById(R.id.b9);
+        mpButtons = new Button[4][4];
+        mpMark = new int[4][4];
+        mpButtons[0][2] = (Button) findViewById(R.id.b1);
+        mpButtons[0][1] = (Button) findViewById(R.id.b2);
+        mpButtons[0][0] = (Button) findViewById(R.id.b3);
+        mpButtons[1][2] = (Button) findViewById(R.id.b4);
+        mpButtons[1][1] = (Button) findViewById(R.id.b5);
+        mpButtons[1][0] = (Button) findViewById(R.id.b6);
+        mpButtons[2][2] = (Button) findViewById(R.id.b7);
+        mpButtons[2][1] = (Button) findViewById(R.id.b8);
+        mpButtons[2][0] = (Button) findViewById(R.id.b9);
 
-        textView = (TextView) findViewById(R.id.dialogue);
+        mpTextView = (TextView) findViewById(R.id.dialogue);
 
         for (i = 0; i <= 2; i++) {
             for (j = 0; j <= 2; j++)
-                mark[i][j] = 2;
+                mpMark[i][j] = 2;
 
         }
 
-        textView.setText("Click a button to start.");
+        mpTextView.setText("Click a button to start.");
         for (i = 0; i <= 2; i++) {
             for (j = 0; j <= 2; j++) {
-                b[i][j].setOnClickListener(l->{
-                    //TODO
-                });
-                if (!b[i][j].isEnabled()) {
-                    b[i][j].setText(" ");
-                    b[i][j].setEnabled(true);
+                mpButtons[i][j].setOnClickListener(new MPClickListener(i, j));
+                if (!mpButtons[i][j].isEnabled()) {
+                    mpButtons[i][j].setText(" ");
+                    mpButtons[i][j].setEnabled(true);
                 }
             }
         }

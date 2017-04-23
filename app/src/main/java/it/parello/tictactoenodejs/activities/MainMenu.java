@@ -29,8 +29,8 @@ public class MainMenu extends AppCompatActivity {
         });
         statistics.setOnClickListener(l->{
             //TODO
-            Fragment statisticsFragment = getSupportFragmentManager().findFragmentById(R.id.statistics_fragment);
-            getSupportFragmentManager().beginTransaction().add(statisticsFragment,"statisticsFragment").commit();
+//            Fragment statisticsFragment = getSupportFragmentManager().findFragmentById(R.id.statistics_fragment);
+//            getSupportFragmentManager().beginTransaction().add(statisticsFragment,"statisticsFragment").commit();
         });
         exit.setOnClickListener(l->{
             onBackPressed();
