@@ -19,7 +19,7 @@ public class MultiPlayer extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_player);
+        setContentView(R.layout.activity_multi_player);
         setBoard();
         restart = (Button) findViewById(R.id.restart);
         restart.setOnClickListener(l->{
@@ -68,7 +68,7 @@ public class MultiPlayer extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-    
+
     private void waitForOpponentToConnect(){
         //TODO
     }

@@ -3,12 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/statistics_fragment"
+    android:background="@color/orange"
     tools:context="it.parello.tictactoenodejs.fragments.Statistics">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sp_match_win_count"
+        android:layout_gravity="center"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="30dp"/>
 
+    <TextView
+        android:id="@+id/sp_win_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#e87300"
+        android:layout_marginBottom="5dp"
+        android:text=" " />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mp_match_win_count"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="35dp"/>
+
+    <TextView
+        android:id="@+id/mp_win_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#e87300"
+        android:layout_marginTop="100dp"
+        android:text=" " />
 </FrameLayout>
