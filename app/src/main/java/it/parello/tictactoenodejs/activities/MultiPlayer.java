@@ -7,8 +7,9 @@ import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.listeners.MPClickListener;
+import it.parello.tictactoenodejs.service.MyAppActivity;
 
-public class MultiPlayer extends AppCompatActivity {
+public class MultiPlayer extends MyAppActivity {
 
     Button restart;
     public static int mpMark[][];

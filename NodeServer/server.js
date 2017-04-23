@@ -6,6 +6,7 @@ var serviceAccount = require("./TicTacToeNodeJs-da99a621f809.json");
 var mongoClient = require("mongodb").MongoClient;
 
 var dbUrl = 'mongodb://localhost:27017/androidTokens';
+var players = [];
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -87,10 +88,25 @@ server.get("/async/gamerequest", function(request, response){
 
 server.post("/async/gamerequest", function(request, response){
 	console.log("intercepting gamerequest");
+	var requestAddress = request.connection.remoteAddress;
+	console.log("request from: ", requestAddress);
+	
+	players[0] = requestAddress;
+	
+	/*for(var i = 0; i < numberOfGameRequests; i++){
+		players[i] = request.body.GameRequest;
+	}
+	if(players.length == 2){
+	console.log(players.length)
+	for(var i = 0; i < 2; i++){
+		console.log(players)
+	}
+	}*/
 	response.send("ok");
 	console.log("Request Body (post): " , request.body);
 });
  
+
 server.get("/", function(request, response){
 	readTokenFromDatabase(request, response);
 	console.log("Request Body: " , request.body);

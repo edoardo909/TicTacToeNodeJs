@@ -8,8 +8,9 @@ import android.widget.TextView;
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.service.Cpu;
 import it.parello.tictactoenodejs.listeners.SPClickListener;
+import it.parello.tictactoenodejs.service.MyAppActivity;
 
-public class SinglePlayer extends AppCompatActivity {
+public class SinglePlayer extends MyAppActivity {
 
     public Button restart;
     public static int spMark[][];

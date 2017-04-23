@@ -1,19 +1,19 @@
 package it.parello.tictactoenodejs.activities;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.net.Uri;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.fragments.Statistics;
 import it.parello.tictactoenodejs.listeners.OGRClickListener;
+import it.parello.tictactoenodejs.service.MyAppActivity;
 
-public class MainMenu extends AppCompatActivity implements Statistics.OnFragmentInteractionListener {
+public class MainMenu extends MyAppActivity implements Statistics.OnFragmentInteractionListener {
 
     Button playAlone,playOnline, statistics,exit;
     Intent intent;
@@ -29,7 +29,6 @@ public class MainMenu extends AppCompatActivity implements Statistics.OnFragment
         });
         playOnline.setOnClickListener(new OGRClickListener(getApplicationContext()));
         statistics.setOnClickListener(l->{
-            //TODO
             Fragment statisticsFragment = new Statistics();
             getSupportFragmentManager()
                     .beginTransaction()

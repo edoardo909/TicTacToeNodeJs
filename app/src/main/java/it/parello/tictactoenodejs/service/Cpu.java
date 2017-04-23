@@ -1,6 +1,10 @@
 package it.parello.tictactoenodejs.service;
 
+import android.content.SharedPreferences;
+
 import java.util.Random;
+
+import it.parello.tictactoenodejs.activities.MainMenu;
 
 import static it.parello.tictactoenodejs.activities.SinglePlayer.spButtons;
 import static it.parello.tictactoenodejs.activities.SinglePlayer.i;
@@ -12,8 +16,23 @@ import static it.parello.tictactoenodejs.activities.SinglePlayer.spTextView;
  * Created by Parello on 12/04/2017.
  */
 
-public class Cpu {
+public class Cpu extends MainMenu{
 
+    public static int winCounter;
+    public static int loseCounter;
+    public static int drawCounter;
+
+    public static int getWinCounter() {
+        return winCounter;
+    }
+
+    public static int getLoseCounter() {
+        return loseCounter;
+    }
+
+    public static int getDrawCounter() {
+        return drawCounter;
+    }
     public void takeTurn() {
 
         if(spMark[0][0]==2 &&
@@ -81,6 +100,8 @@ public class Cpu {
 
     public boolean isGameOver() {
         boolean gameOver = false;
+
+
         if ((spMark[0][0] == 0 && spMark[1][1] == 0 && spMark[2][2] == 0)
                 || (spMark[0][2] == 0 && spMark[1][1] == 0 && spMark[2][0] == 0)
                 || (spMark[0][1] == 0 && spMark[1][1] == 0 && spMark[2][1] == 0)
@@ -91,6 +112,7 @@ public class Cpu {
                 || (spMark[0][0] == 0 && spMark[1][0] == 0 && spMark[2][0] == 0)) {
             spTextView.setText("Game over. You win!");
             gameOver = true;
+            winCounter++;
             for (i = 0; i <= 2; i++) {
                 for (j = 0; j <= 2; j++)
                     spButtons[i][j].setEnabled(false);
@@ -105,6 +127,7 @@ public class Cpu {
                 || (spMark[0][0] == 1 && spMark[1][0] == 1 && spMark[2][0] == 1)) {
             spTextView.setText("Game over. You lost!");
             gameOver = true;
+            loseCounter++;
             for (i = 0; i <= 2; i++) {
                 for (j = 0; j <= 2; j++)
                     spButtons[i][j].setEnabled(false);
@@ -121,6 +144,7 @@ public class Cpu {
             }
             if(!empty) {
                 gameOver = true;
+                drawCounter++;
                 spTextView.setText("Game over. It's a draw!");
             }
         }
