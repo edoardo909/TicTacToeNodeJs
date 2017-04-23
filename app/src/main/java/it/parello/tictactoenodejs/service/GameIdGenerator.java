@@ -7,7 +7,7 @@ import java.math.BigInteger;
 
 public final class GameIdGenerator {
 
-    public String nextSessionId() {
+    public static String  nextSessionId() {
         SecureRandom random = new SecureRandom();
         return new BigInteger(130, random).toString(32);
     }

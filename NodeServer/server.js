@@ -68,7 +68,7 @@ function sendNotification(request, response, tokens){
  
  server.post("/async", function(request, response){
 	console.log("intercepting asyncTask");
-	response.send("intercepting asyncTask");
+	response.send("Node Server intercepting asyncTask");
 	console.log("Request Body (post): " , request.body);
  });
  
@@ -78,6 +78,19 @@ function sendNotification(request, response, tokens){
 	console.log("Request Body: " , request.body);
 	
 });
+
+server.get("/async/gamerequest", function(request, response){
+	 console.log("getting async gamerequest");
+	response.send("Getting gamerequest");
+	console.log("Request Body: " , request.body);
+});
+
+server.post("/async/gamerequest", function(request, response){
+	console.log("intercepting gamerequest");
+	response.send("ok");
+	console.log("Request Body (post): " , request.body);
+});
+ 
 server.get("/", function(request, response){
 	readTokenFromDatabase(request, response);
 	console.log("Request Body: " , request.body);

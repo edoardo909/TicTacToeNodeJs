@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.service.Cpu;
-import it.parello.tictactoenodejs.service.SPClickListener;
+import it.parello.tictactoenodejs.listeners.SPClickListener;
 
 public class SinglePlayer extends AppCompatActivity {
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import it.parello.tictactoenodejs.R;
+import it.parello.tictactoenodejs.listeners.OGRClickListener;
 
 public class MainMenu extends AppCompatActivity {
 
@@ -22,11 +23,7 @@ public class MainMenu extends AppCompatActivity {
             intent = new Intent(this,SinglePlayer.class);
             startActivity(intent);
         });
-        playOnline.setOnClickListener(l->{
-            //TODO
-            intent = new Intent(this,MultiPlayer.class);
-            startActivity(intent);
-        });
+        playOnline.setOnClickListener(new OGRClickListener(getApplicationContext()));
         statistics.setOnClickListener(l->{
             //TODO
 //            Fragment statisticsFragment = getSupportFragmentManager().findFragmentById(R.id.statistics_fragment);
@@ -44,12 +41,5 @@ public class MainMenu extends AppCompatActivity {
         exit = (Button) findViewById(R.id.exit);
     }
 
-    @Override
-    public void onBackPressed(){
-        if(getSupportFragmentManager().getBackStackEntryCount() > 0){
-            //TODO notifica che vince l'altro
-        }else {
-            super.onBackPressed();
-        }
-    }
+
 }

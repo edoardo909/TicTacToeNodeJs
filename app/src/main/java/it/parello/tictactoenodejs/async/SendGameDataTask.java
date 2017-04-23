@@ -1,4 +1,4 @@
-package it.parello.tictactoenodejs.service;
+package it.parello.tictactoenodejs.async;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -66,7 +66,7 @@ public class SendGameDataTask extends AsyncTask<String,Void,String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        Log.e("TAG", result); // this is expecting a response code to be sent from your server upon receiving the POST data
+        Log.e(TAG , result);
     }
 }
 /*

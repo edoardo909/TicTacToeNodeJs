@@ -6,7 +6,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
-import it.parello.tictactoenodejs.service.MPClickListener;
+import it.parello.tictactoenodejs.listeners.MPClickListener;
 
 public class MultiPlayer extends AppCompatActivity {
 
@@ -20,6 +20,7 @@ public class MultiPlayer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_player);
+        setBoard();
         restart = (Button) findViewById(R.id.restart);
         restart.setOnClickListener(l->{
             setBoard();
@@ -27,7 +28,6 @@ public class MultiPlayer extends AppCompatActivity {
     }
 
     private void setBoard() {
-        //TODO waitForOtherPlayer()
         mpButtons = new Button[4][4];
         mpMark = new int[4][4];
         mpButtons[0][2] = (Button) findViewById(R.id.b1);
@@ -60,6 +60,15 @@ public class MultiPlayer extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed(){
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0){
+            //TODO notifica che vince l'altro
+        }else {
+            super.onBackPressed();
+        }
+    }
+    
     private void waitForOpponentToConnect(){
         //TODO
     }

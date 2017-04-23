@@ -1,4 +1,4 @@
-package it.parello.tictactoenodejs.service;
+package it.parello.tictactoenodejs.listeners;
 
 import android.util.Log;
 import android.view.View;
@@ -6,7 +6,11 @@ import android.view.View;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
+import it.parello.tictactoenodejs.async.SendGameDataTask;
 import it.parello.tictactoenodejs.firebase.MyFirebaseInstanceIdService;
+import it.parello.tictactoenodejs.service.GameIdGenerator;
 
 import static it.parello.tictactoenodejs.activities.MultiPlayer.mpButtons;
 import static it.parello.tictactoenodejs.activities.MultiPlayer.mpMark;
@@ -21,8 +25,8 @@ public class MPClickListener implements View.OnClickListener {
     int x;
     int y;
     private static final String URL = "http://192.168.10.21:8888/async";
-    GameIdGenerator idGenerator = new GameIdGenerator();
-    private String gameId = idGenerator.nextSessionId();
+    private final String newGameId = GameIdGenerator.nextSessionId();
+    private static String gameId;
     String [] tempBoardData = {"O","O","X"," ","X"," "," "," "," ",};
     private static final String TAG = "MPClickListener";
 
@@ -45,10 +49,11 @@ public class MPClickListener implements View.OnClickListener {
     }
     private void sendJson(){
         JSONObject gameData = new JSONObject();
+        gameId = newGameId;
         try {
             gameData.put("player_id", MyFirebaseInstanceIdService.getRefreshedToken());
             gameData.put("game_id", gameId);
-            gameData.put("board_data", tempBoardData );
+            gameData.put("board_data", Arrays.toString(tempBoardData) );
             gameData.put("winner", false);
             Log.d(TAG,"Executing task: sending gamedata");
             new SendGameDataTask().execute(URL,gameData.toString());
