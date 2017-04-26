@@ -1,5 +1,8 @@
 package it.parello.tictactoenodejs.firebase;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -15,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import it.parello.tictactoenodejs.R;
+import it.parello.tictactoenodejs.service.MyAppActivity;
 
 /**
  * Created by Parello on 20/04/2017.
@@ -23,11 +27,16 @@ import it.parello.tictactoenodejs.R;
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
+    Context applicationContext = MyAppActivity.getContextOfApplication();
 
     //Set with your local ip address and the port you selected in the node server.js
     private static final String URL = "http://192.168.1.220:8888/";
 
-    String refreshedToken;
+    public static String getRefreshedToken() {
+        return refreshedToken;
+    }
+
+    private static String refreshedToken;
     @Override
     public void onTokenRefresh() {
         // Get updated InstanceID token.
@@ -42,6 +51,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
 
     public String sendRegistrationToServer(String token){
+        saveTokenToPreferences(token);
         HttpURLConnection connection = null;
         URL url;
         InputStream stream = null;
@@ -73,5 +83,12 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
             }
         }
         return null;
+    }
+
+    public void saveTokenToPreferences(String token){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("firebase-token", token);
+        editor.commit();
     }
 }

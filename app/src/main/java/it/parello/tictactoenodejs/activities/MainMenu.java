@@ -1,9 +1,11 @@
 package it.parello.tictactoenodejs.activities;
 
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import it.parello.tictactoenodejs.R;
@@ -12,13 +14,17 @@ public class MainMenu extends AppCompatActivity {
 
     Button playAlone,playOnline, statistics,exit;
     Intent intent;
+    private static final String TAG = "MainMenuActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViews();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String myToken = prefs.getString("firebase-token","you fucked up somewhere");
         playAlone.setOnClickListener(l->{
+            Log.e(TAG,"MY TOKEN: " + myToken);
             intent = new Intent(this,SinglePlayer.class);
             startActivity(intent);
         });
