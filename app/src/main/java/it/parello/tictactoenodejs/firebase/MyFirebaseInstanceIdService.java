@@ -8,7 +8,6 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -17,7 +16,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.service.MyAppActivity;
 
 /**
@@ -30,13 +28,10 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
     Context applicationContext = MyAppActivity.getContextOfApplication();
 
     //Set with your local ip address and the port you selected in the node server.js
-    private static final String URL = "http://192.168.10.21:8888/";
+    private static final String URL = "http://192.168.1.220:8888/token";
 
-    public static String getRefreshedToken() {
-        return refreshedToken;
-    }
 
-    static String refreshedToken;
+    public static String refreshedToken;
     @Override
     public void onTokenRefresh() {
         // Get updated InstanceID token.

@@ -2,14 +2,16 @@ package it.parello.tictactoenodejs.listeners;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
 import it.parello.tictactoenodejs.activities.MultiPlayer;
 import it.parello.tictactoenodejs.async.SendOnlineGameRequest;
 import it.parello.tictactoenodejs.service.AsyncResponse;
+import it.parello.tictactoenodejs.service.MyAppActivity;
 
-import static it.parello.tictactoenodejs.firebase.MyFirebaseInstanceIdService.refreshedToken;
 
 
 /**
@@ -35,18 +37,23 @@ public class OGRClickListener implements View.OnClickListener,AsyncResponse {
     public void onClick(View v) {
         SendOnlineGameRequest sgr = new SendOnlineGameRequest(this);
         Log.d(TAG,"Sending Online Game Request Async Task");
-
-        sgr.execute(URL,"iWannaPlay");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MyAppActivity.getContextOfApplication());
+        String myToken = prefs.getString("firebase-token","you fucked up somewhere");
+        //use firebase token as id for game request
+        sgr.execute(URL,myToken);
     }
 
     @Override
     public void onProcessFinished(String responseCode) {
         Log.d(TAG,"Sending Online Game Request Async Task Finish");
-        if (responseCode.equals("ok")){
+        if (responseCode.equals("200")){
             Log.d(TAG,"Response is OK");
             intent = new Intent(context,MultiPlayer.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
+        } else if(responseCode.equals("500")){
+            Log.e(TAG,"Response is ERROR: 500");
+            Log.e(TAG,"You are not registered on the server... WHO ARE YOU??");
         }
     }
 }

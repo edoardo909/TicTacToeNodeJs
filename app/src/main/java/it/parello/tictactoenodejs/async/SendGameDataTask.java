@@ -3,18 +3,12 @@ package it.parello.tictactoenodejs.async;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import it.parello.tictactoenodejs.firebase.MyFirebaseInstanceIdService;
 
 /**
  * Created by Parello on 21/04/2017.

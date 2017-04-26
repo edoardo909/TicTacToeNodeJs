@@ -1,6 +1,5 @@
 package it.parello.tictactoenodejs.activities;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.content.Intent;

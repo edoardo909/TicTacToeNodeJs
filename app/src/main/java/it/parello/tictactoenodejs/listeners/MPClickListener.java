@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 import it.parello.tictactoenodejs.async.SendGameDataTask;
-import it.parello.tictactoenodejs.firebase.MyFirebaseInstanceIdService;
 import it.parello.tictactoenodejs.service.GameIdGenerator;
 
 import static it.parello.tictactoenodejs.activities.MultiPlayer.mpButtons;
@@ -52,7 +51,7 @@ public class MPClickListener implements View.OnClickListener {
         JSONObject gameData = new JSONObject();
         gameId = newGameId;
         try {
-            gameData.put("player_id", MyFirebaseInstanceIdService.getRefreshedToken());
+            gameData.put("player_id", "123456");
             gameData.put("game_id", gameId);
             gameData.put("board_data", Arrays.toString(tempBoardData) );
             gameData.put("winner", false);
