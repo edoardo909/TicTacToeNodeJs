@@ -2,6 +2,7 @@ package it.parello.tictactoenodejs.async;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -23,6 +24,14 @@ public class SendOnlineGameRequest extends AsyncTask<String, Void, String> {
     public SendOnlineGameRequest(AsyncResponse listener){
         this.responseListener = listener;
     }
+
+
+    @Override
+    protected void onPreExecute(){
+        super.onPreExecute();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected String doInBackground(String... params) {
         String data = "";

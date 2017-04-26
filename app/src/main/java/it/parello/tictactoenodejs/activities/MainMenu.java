@@ -3,11 +3,13 @@ package it.parello.tictactoenodejs.activities;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.content.Intent;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.fragments.Statistics;
@@ -18,6 +20,10 @@ public class MainMenu extends MyAppActivity implements Statistics.OnFragmentInte
 
     Button playAlone,playOnline, statistics,exit;
     Intent intent;
+    public ProgressBar progressBar;
+    public int progressStatus = 0;
+    private Handler mHandler = new Handler();
+
     private static final String TAG = "MainMenuActivity";
 
     @Override
@@ -52,6 +58,7 @@ public class MainMenu extends MyAppActivity implements Statistics.OnFragmentInte
         playOnline = (Button) findViewById(R.id.play_multi_player);
         statistics = (Button) findViewById(R.id.statistics);
         exit = (Button) findViewById(R.id.exit);
+        progressBar = (ProgressBar) findViewById(R.id.progresss_bar);
     }
 
 

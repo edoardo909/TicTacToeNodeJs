@@ -56,4 +56,17 @@ public class OGRClickListener implements View.OnClickListener,AsyncResponse {
             Log.e(TAG,"You are not registered on the server... WHO ARE YOU??");
         }
     }
+
+    public void startProgress(View view){
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i<= 10; i++){
+                    final int value = i;
+//                    doSomething();
+                    progressbar
+                }
+            }
+        };
+    }
 }

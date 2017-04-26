@@ -47,6 +47,12 @@
         android:text="@string/exit"
         android:layout_below="@id/statistics"/>
 
+    <ProgressBar
+        android:id="@+id/progresss_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Large"/>
+
     <FrameLayout
         android:id="@+id/statistics_content"
         android:layout_width="match_parent"
