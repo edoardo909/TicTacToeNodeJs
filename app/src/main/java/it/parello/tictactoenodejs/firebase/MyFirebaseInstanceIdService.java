@@ -36,11 +36,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
         return refreshedToken;
     }
 
-<<<<<<< HEAD
-    private static String refreshedToken;
-=======
     static String refreshedToken;
->>>>>>> master
     @Override
     public void onTokenRefresh() {
         // Get updated InstanceID token.
