@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+<<<<<<< HEAD
 import android.os.Bundle;
+=======
+>>>>>>> master
 import android.support.v7.app.AppCompatActivity;
 
 /**
@@ -13,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class MyAppActivity extends AppCompatActivity {
 
+<<<<<<< HEAD
     public static Context contextOfApplication;
 
     @Override
@@ -24,4 +28,7 @@ public class MyAppActivity extends AppCompatActivity {
     public static Context getContextOfApplication(){
         return contextOfApplication;
     }
+=======
+
+>>>>>>> master
 }

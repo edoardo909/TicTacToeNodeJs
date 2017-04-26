@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="3"
-    android:background="@color/green"
-    tools:context="it.parello.tictactoenodejs.activities.SinglePlayer">
+    android:background="@color/violet"
+    tools:context="it.parello.tictactoenodejs.activities.MultiPlayer">
 
     <LinearLayout
         android:id="@+id/row1"

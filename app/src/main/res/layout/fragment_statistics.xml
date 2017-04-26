@@ -1,14 +1,92 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/statistics_fragment"
+    android:background="@color/orange"
     tools:context="it.parello.tictactoenodejs.fragments.Statistics">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/sp_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="10dp"
 
-</FrameLayout>
+        android:text="@string/sp_match_win_count" />
+
+    <TextView
+        android:id="@+id/sp_win_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@color/violet"
+        android:layout_below="@id/sp_text"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="40dp"
+        android:text=" " />
+    <TextView
+        android:id="@+id/sp_lose_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/violet"
+        android:layout_below="@id/sp_text"
+        android:layout_toRightOf="@id/sp_win_counter"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="40dp"
+        android:text=" " />
+    <TextView
+        android:id="@+id/sp_draw_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/violet"
+        android:layout_below="@id/sp_text"
+        android:layout_toRightOf="@id/sp_lose_counter"
+        android:layout_marginBottom="5dp"
+        android:text=" " />
+
+    <TextView
+        android:id="@+id/mp_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/mp_match_win_count"
+        android:layout_below="@id/sp_win_counter"
+        android:layout_marginTop="50dp"/>
+
+    <TextView
+        android:id="@+id/mp_win_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/violet"
+        android:layout_below="@id/mp_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="40dp"
+        android:text=" " />
+    <TextView
+        android:id="@+id/mp_lose_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/violet"
+        android:layout_below="@id/mp_text"
+        android:layout_toRightOf="@id/mp_win_counter"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="40dp"
+        android:text=" " />
+    <TextView
+        android:id="@+id/mp_draw_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/violet"
+        android:layout_below="@id/mp_text"
+        android:layout_toRightOf="@id/mp_lose_counter"
+        android:layout_marginTop="5dp"
+        android:text=" " />
+</RelativeLayout>

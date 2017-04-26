@@ -24,7 +24,11 @@ public class MPClickListener implements View.OnClickListener {
 
     int x;
     int y;
+<<<<<<< HEAD
     private static final String URL = "http://192.168.1.220:8888/async";
+=======
+    private static final String URL = "http://192.168.10.21:8888/async";
+>>>>>>> master
     private final String newGameId = GameIdGenerator.nextSessionId();
     private static String gameId;
     String [] tempBoardData = {"O","O","X"," ","X"," "," "," "," ",};

@@ -9,8 +9,11 @@ import it.parello.tictactoenodejs.activities.MultiPlayer;
 import it.parello.tictactoenodejs.async.SendOnlineGameRequest;
 import it.parello.tictactoenodejs.service.AsyncResponse;
 
+<<<<<<< HEAD
 import static it.parello.tictactoenodejs.firebase.MyFirebaseInstanceIdService.refreshedToken;
 
+=======
+>>>>>>> master
 /**
  * Created by edoar on 23/04/2017.
  */
@@ -21,7 +24,11 @@ import static it.parello.tictactoenodejs.firebase.MyFirebaseInstanceIdService.re
 public class OGRClickListener implements View.OnClickListener,AsyncResponse {
 
     private static final String TAG = "OGRClickListener";
+<<<<<<< HEAD
     private static final String URL = "http://192.168.1.220:8888/async/gamerequest";
+=======
+    private static final String URL = "http://192.168.10.21:8888/async/gamerequest";
+>>>>>>> master
     Context context;
     Intent intent;
 
@@ -33,7 +40,10 @@ public class OGRClickListener implements View.OnClickListener,AsyncResponse {
     public void onClick(View v) {
         SendOnlineGameRequest sgr = new SendOnlineGameRequest(this);
         Log.d(TAG,"Sending Online Game Request Async Task");
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
         sgr.execute(URL,"iWannaPlay");
     }
 

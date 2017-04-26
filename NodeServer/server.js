@@ -5,7 +5,8 @@ var server = express();
 var serviceAccount = require("./TicTacToeNodeJs-da99a621f809.json");
 var mongoClient = require("mongodb").MongoClient;
 
-var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
+var dbUrl = 'mongodb://localhost:27017/androidTokens';
+var players = [];
 
 
 var players = [];
@@ -95,7 +96,10 @@ function confirmGameRequestNotification(request, response, playersIDs){
 	});
 }
  
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
  server.get("/home", function(request, response){
 	 console.log("HOMEPAGE")
 	 response.send("HomePage.<br />Still haven't decided what to do with it. <br />-try going to '/token' for now")
@@ -125,6 +129,7 @@ server.post("/async/gamerequest", function(request, response){
 	var requestAddress = request.connection.remoteAddress;
 	console.log("request from: ", requestAddress);
 	
+<<<<<<< HEAD
 	players.push(requestAddress);
 	if(players.length >= 2){
 		getPlayersIDsAndConfirm(request, response)
@@ -132,11 +137,28 @@ server.post("/async/gamerequest", function(request, response){
 	}
 	
 	console.log("players: ",players);
+=======
+	players[0] = requestAddress;
+	
+	/*for(var i = 0; i < numberOfGameRequests; i++){
+		players[i] = request.body.GameRequest;
+	}
+	if(players.length == 2){
+	console.log(players.length)
+	for(var i = 0; i < 2; i++){
+		console.log(players)
+	}
+	}*/
+	response.send("ok");
+>>>>>>> master
 	console.log("Request Body (post): " , request.body);
 });
  
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 server.get("/", function(request, response){
 	readTokenFromDatabase(request, response);
 	console.log("Request Body: " , request.body);
@@ -153,8 +175,13 @@ server.post("/", function(request, response){
 	console.log("Request Body (post): " , request.body);
 });		
 
+<<<<<<< HEAD
 
 server.listen(8888,'192.168.1.220', function(){
 >>>>>>> Stashed changes
 	console.log("Server started on http://192.168.1.220:8888/");
+=======
+server.listen(8888,'192.168.10.21', function(){
+	console.log("Server started on http://192.168.10.21:8888/");
+>>>>>>> master
 });
