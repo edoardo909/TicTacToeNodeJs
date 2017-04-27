@@ -3,6 +3,7 @@ package it.parello.tictactoenodejs.async;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -16,11 +17,12 @@ import it.parello.tictactoenodejs.service.AsyncResponse;
  * Created by edoar on 23/04/2017.
  */
 
-public class SendOnlineGameRequest extends AsyncTask<String, Void, String> {
+public class SendOnlineGameRequest extends AsyncTask<String, Integer, String> {
 
     private static final String TAG = "SendOnlineGameRequest";
     public AsyncResponse responseListener;
-
+//    ProgressBar progressBar;
+//    int progressStatus = 0;
     public SendOnlineGameRequest(AsyncResponse listener){
         this.responseListener = listener;
     }
@@ -29,7 +31,7 @@ public class SendOnlineGameRequest extends AsyncTask<String, Void, String> {
     @Override
     protected void onPreExecute(){
         super.onPreExecute();
-        progressBar.setVisibility(View.VISIBLE);
+//        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -37,42 +39,56 @@ public class SendOnlineGameRequest extends AsyncTask<String, Void, String> {
         String data = "";
 
         HttpURLConnection httpURLConnection = null;
-        try {
+//        while(progressStatus < 100) {
+            try {
 
-            httpURLConnection = (HttpURLConnection) new URL(params[0]).openConnection();
-            httpURLConnection.setRequestMethod("POST");
+                httpURLConnection = (HttpURLConnection) new URL(params[0]).openConnection();
+                httpURLConnection.setRequestMethod("POST");
 
-            httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoOutput(true);
 
-            DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-            wr.writeBytes("GameRequest=" + params[1]);
-            wr.flush();
-            wr.close();
-            Log.d(TAG,"sending gamerequest");
-            InputStream in = httpURLConnection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(in);
-
-            int inputStreamData = inputStreamReader.read();
-            while (inputStreamData != -1) {
-                char current = (char) inputStreamData;
-                inputStreamData = inputStreamReader.read();
-                data += current;
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                wr.writeBytes("GameRequest=" + params[1]);
+                wr.flush();
+                wr.close();
+                Log.d(TAG, "sending gamerequest");
+                InputStream in = httpURLConnection.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(in);
+//                try {
+//                    Thread.sleep(1000);
+//                    publishProgress(progressStatus);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                int inputStreamData = inputStreamReader.read();
+                while (inputStreamData != -1) {
+                    char current = (char) inputStreamData;
+                    inputStreamData = inputStreamReader.read();
+                    data += current;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (httpURLConnection != null) {
-                httpURLConnection.disconnect();
-            }
-        }
-
+//        }
         return data;
     }
+
+//    @Override
+//    protected void onProgressUpdate(Integer...values){
+//        progressBar.setProgress(values[0]);
+//    }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         Log.e(TAG , result);
         responseListener.onProcessFinished(result);
+//        progressBar.setVisibility(View.GONE);
     }
+
+
 }

@@ -20,9 +20,8 @@ public class MainMenu extends MyAppActivity implements Statistics.OnFragmentInte
 
     Button playAlone,playOnline, statistics,exit;
     Intent intent;
-    public ProgressBar progressBar;
-    public int progressStatus = 0;
-    private Handler mHandler = new Handler();
+//    public ProgressBar progressBar;
+
 
     private static final String TAG = "MainMenuActivity";
 
@@ -58,7 +57,7 @@ public class MainMenu extends MyAppActivity implements Statistics.OnFragmentInte
         playOnline = (Button) findViewById(R.id.play_multi_player);
         statistics = (Button) findViewById(R.id.statistics);
         exit = (Button) findViewById(R.id.exit);
-        progressBar = (ProgressBar) findViewById(R.id.progresss_bar);
+//        progressBar = (ProgressBar) findViewById(R.id.progresss_bar);
     }
 
 
