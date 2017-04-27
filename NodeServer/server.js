@@ -5,8 +5,9 @@ var server = express();
 var serviceAccount = require("./TicTacToeNodeJs-da99a621f809.json");
 var mongoClient = require("mongodb").MongoClient;
 
+
 var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
-var players = [];
+
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -88,6 +89,7 @@ function getPlayersIDsAndConfirm(request, response){
                 }
                 console.log("playersIDs", playersIDs);
                 confirmGameRequestNotification(request, response, playersIDs);
+//                createGameInstance(request,response, playersIDs);
                 response.send("200");
             }
 		});
@@ -101,7 +103,47 @@ function confirmGameRequestNotification(request, response, playersIDs){
 		console.log("Error sending message: ", error);
 	});
 }
- 
+function isAnyPlayerWaitingForGame(){
+    //TODO controllo se esiste gia una gameInstance e se è gia piena di giocatori(.length>2)
+    //TODO poi se esiste e non è piena, inserisci giocatore; se esiste ed è piena creane un'altra; se non esiste, crea gameInstance
+    mongoClient.connect(dbUrl, function(error,db){
+
+    });
+}
+
+function createGameInstance(request, response, playersIDs){
+    mongoClient.connect(dbUrl, function(error,db){
+        var collection = db.collection("gameInstances");
+        if (error) throw error;
+    });
+});
+//function createGameInstance(request, response, playersIDs){ //TODO MI SA CHE HO SBAGLIATO APPROCCIO: NON USARE COLLECTIONS, USA UN SINGOLO RECORD
+//	mongoClient.connect(dbUrl, function(error, db){
+//		var collectionName = "gameInstance";
+//		var collection = db.collection(collectionName);
+//		db.listCollections({name: collectionName}).toArray(function(err, data){
+//		if (data.length >= 2){
+//		    console.log("this game instance is full!!")
+//		    return;
+//	    }
+//		if (err){
+//		    db.createCollection(collectionName, {max: 2});
+//		    return err;
+//		}else {
+//            var array = new Array;
+//            for(var name in data){
+//                array[name] = data[name].name;
+//            }
+//            console.log("Collection created: ", array[0]);
+//            }
+//		})
+//		collection.insert({"player":playersIDs},function (error, result){
+//            if(error) throw error;
+//            console.log(result);
+//        });
+//
+//	});
+//}
 
  server.get("/home", function(request, response){
 	 console.log("HOMEPAGE")
@@ -131,13 +173,9 @@ server.post("/async/gamerequest", function(request, response){
 	console.log("intercepting gamerequest");
 	var requestAddress = request.connection.remoteAddress;
 	console.log("request from: ", requestAddress);
-	
-	//players.push(requestAddress);
 
 	getPlayersIDsAndConfirm(request, response)
-	//response.send("200");
 
-//	console.log("players: ",players);
 	console.log("Request Body (post): " , request.body);
 });
  
