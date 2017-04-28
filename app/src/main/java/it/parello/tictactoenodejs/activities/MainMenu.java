@@ -60,7 +60,12 @@ public class MainMenu extends MyAppActivity implements Statistics.OnFragmentInte
 //        progressBar = (ProgressBar) findViewById(R.id.progresss_bar);
     }
 
-
+    @Override
+    public void onBackPressed(){
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0){
+            super.onBackPressed();
+        }
+    }
     @Override
     public void onFragmentInteraction(Uri uri) {
 

@@ -4,7 +4,7 @@ var express = require("express");
 var server = express();
 var serviceAccount = require("./TicTacToeNodeJs-da99a621f809.json");
 var mongoClient = require("mongodb").MongoClient;
-
+var autoIncrement = require("mongodb-autoincrement");
 
 var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
 
@@ -88,11 +88,12 @@ function getPlayersIDsAndConfirm(request, response){
                     playersIDs[playerID] = dataArray[playerID].token;
                 }
                 console.log("playersIDs", playersIDs);
+                isAnyPlayerWaitingForGame(request, response, playersIDs);
                 confirmGameRequestNotification(request, response, playersIDs);
-//                createGameInstance(request,response, playersIDs);
                 response.send("200");
             }
 		});
+
     });
 }
 
@@ -103,47 +104,80 @@ function confirmGameRequestNotification(request, response, playersIDs){
 		console.log("Error sending message: ", error);
 	});
 }
-function isAnyPlayerWaitingForGame(){
+function isAnyPlayerWaitingForGame(request, response, playersIDs){
     //TODO controllo se esiste gia una gameInstance e se è gia piena di giocatori(.length>2)
     //TODO poi se esiste e non è piena, inserisci giocatore; se esiste ed è piena creane un'altra; se non esiste, crea gameInstance
+    /**
+    *   Nella collection 'gameInstances' il primo record deve esistere prima di fare la prima chiamata:
+    *   ovvero: se la collection è vuota e mando una gameRequest , il db non restituisce nulla perchè l'array 'data' è di lunghezza 0
+    */
     mongoClient.connect(dbUrl, function(error,db){
+        var collection = db.collection("gameInstances");
+        if (error) throw error;
+        collection.find().toArray(function(error, data){
+            if (error) return error;
+            var arrayP1 = new Array;
+            var arrayP2 = new Array;
+            for (var i = 1;i < data.length; i++ ){
+                arrayP1[i] = data[i].player1;
+                arrayP2[i] = data[i].player2;
+            }
+            console.log("last dataArray: ", data[data.length-1]);
+            console.log("last player1: ", arrayP1[data.length-1]);
+            console.log("last player2: ", arrayP2[data.length-1]);
+            if ((arrayP2[data.length-1] == "" || arrayP2[data.length-1] == null) && arrayP1[data.length-1] != "playerone"  ){
+                createNewGameInstance(request, response, playersIDs);
+                return true;
+            } else {                        //TODO FIX STA MERDA DEL CAZZO CHE NON VUOLE FUNZIONARE
+                createGameInstance(request, response, playersIDs);
+                return false;
+            }
 
+        });
     });
 }
 
 function createGameInstance(request, response, playersIDs){
+    //TODO visto che esiste una gameInstance con un giocatore in attesa, ti butto li dentro
     mongoClient.connect(dbUrl, function(error,db){
         var collection = db.collection("gameInstances");
         if (error) throw error;
+        collection.find().toArray(function(error, data){
+                    if (error) return error;
+                    var arrayP1 = new Array;
+                    var arrayP2 = new Array;
+                    var IDArray = new Array;
+                    for (var i = 1;i < data.length; i++ ){
+                        arrayP1[i] = data[i].player1;
+                        arrayP2[i] = data[i].player2;
+                        IDArray[i] = data[i]._id;
+                    }
+                    console.log("Updating game instance with ID: ", IDArray[data.length-1]);
+                    if(arrayP1[data.length-1] != "playerone" || arrayP2[data.length-1] == null){ //c'è un record con ID=1, player1='playerone', player2='playertwo' che deve esistere, altrimenti non funziona
+                        collection.updateOne({_id: IDArray[data.length-1]},{$set: {player2: playersIDs[1]}},function(error, result){
+                        if(error) throw error;
+                        console.log("update outcome: ok");
+                        })
+                    }
+        });
     });
-});
-//function createGameInstance(request, response, playersIDs){ //TODO MI SA CHE HO SBAGLIATO APPROCCIO: NON USARE COLLECTIONS, USA UN SINGOLO RECORD
-//	mongoClient.connect(dbUrl, function(error, db){
-//		var collectionName = "gameInstance";
-//		var collection = db.collection(collectionName);
-//		db.listCollections({name: collectionName}).toArray(function(err, data){
-//		if (data.length >= 2){
-//		    console.log("this game instance is full!!")
-//		    return;
-//	    }
-//		if (err){
-//		    db.createCollection(collectionName, {max: 2});
-//		    return err;
-//		}else {
-//            var array = new Array;
-//            for(var name in data){
-//                array[name] = data[name].name;
-//            }
-//            console.log("Collection created: ", array[0]);
-//            }
-//		})
-//		collection.insert({"player":playersIDs},function (error, result){
-//            if(error) throw error;
-//            console.log(result);
-//        });
-//
-//	});
-//}
+}
+
+function createNewGameInstance(request, response, playersIDs){
+    mongoClient.connect(dbUrl, function(error,db){
+        if (error) throw error;
+        autoIncrement.getNextSequence(db, "gameInstances", function(error, index){
+            var collection = db.collection("gameInstances");
+
+            collection.insert({_id: index ,player1: playersIDs[0],function (error, result){
+                if(error) throw error;
+                console.log("insert outcome: ",result)
+                }
+            })
+            //TODO waitForOtherPlayer()
+        })
+    });
+}
 
  server.get("/home", function(request, response){
 	 console.log("HOMEPAGE")

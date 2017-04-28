@@ -23,7 +23,7 @@ import it.parello.tictactoenodejs.service.MyAppActivity;
 /*
 * OnlineGameRequestClickListener
 */
-public class OGRClickListener implements View.OnClickListener,AsyncResponse {
+public class OGRClickListener implements View.OnClickListener, AsyncResponse {
 
     private static final String TAG = "OGRClickListener";
     private static final String URL = "http://192.168.1.220:8888/async/gamerequest";
