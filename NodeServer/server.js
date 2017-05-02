@@ -93,16 +93,15 @@ function getPlayersIDsAndConfirm(request, response){
                 }
                 console.log("playersIDs", playersIDs);
                 isAnyPlayerWaitingForGame(request, response, playersIDs);
-                confirmGameRequestNotification(request, response, playersIDs);
+//                confirmGameRequestNotification(request, response, playersIDs);
                 response.send("200");
             }
 		});
-
     });
 }
 
-function confirmGameRequestNotification(request, response, playersIDs){
-	admin.messaging().sendToDevice(playersIDs, gameConfirmation).then(function(response){
+function confirmGameRequestNotification(request, response, playersIDs, startGameNotification){
+	admin.messaging().sendToDevice(playersIDs, startGameNotification).then(function(response){
 		console.log("Successfully sent message: ",response);
 	}).catch(function(error){
 		console.log("Error sending message: ", error);
@@ -126,22 +125,24 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
                 arrayP1[i] = data[i].player1;
                 arrayP2[i] = data[i].player2;
             }
-            console.log("last dataArray: ", data[data.length-1]);
+//            console.log("last dataArray: ", data[data.length-1]);
             console.log("last player1: ", data[data.length-1].player1);
             console.log("last player2: ", data[data.length-1].player2);
             if (data[data.length-1].player1 != 'playerone' && (data[data.length-1].player2 == "" || data[data.length-1].player2 == null)  ){
+//                console.log("PLAYERsIDS prima", playersIDs)
+                playersIDs.push(request.body.GameRequest);
                 createGameInstance(request, response, playersIDs);
-//                return true;
-            } else if(data[data.length-1].player1 == 'playerone'){                        //TODO FIX STA MERDA DEL CAZZO CHE NON VUOLE FUNZIONARE
+//                console.log("PLAYERsIDS dopo", playersIDs)
+                return true;
+            } else if(data[data.length-1].player1 == 'playerone'){
                 createNewGameInstance(request, response, playersIDs);
-//                return false;
+                return false;
             }
         });
     });
 }
 
 function createGameInstance(request, response, playersIDs){
-    //TODO visto che esiste una gameInstance con un giocatore in attesa, ti butto li dentro
     mongoClient.connect(dbUrl, function(error,db){
         var collection = db.collection("gameInstances");
         if (error) throw error;
@@ -164,6 +165,13 @@ function createGameInstance(request, response, playersIDs){
                     }
         });
     });
+    var startGameNotification =  {
+        data: {
+            message: "StartGame",
+            responseCode: "200"
+        }
+    }
+    confirmGameRequestNotification(request, response, playersIDs, startGameNotification)
 }
 
 function createNewGameInstance(request, response, playersIDs){
@@ -181,6 +189,8 @@ function createNewGameInstance(request, response, playersIDs){
         })
     });
 }
+
+
 
  server.get("/home", function(request, response){
 	 console.log("HOMEPAGE")
