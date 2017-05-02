@@ -5,50 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/blue"
     tools:context="it.parello.tictactoenodejs.activities.MainMenu">
 
-    <TextView
-        android:id="@+id/menu_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:paddingTop="150dp"
-        android:textSize="30dp"
-        android:text="@string/menu_title" />
-
-    <Button
-        android:id="@+id/play_single_player"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/play_single_player"
-        android:layout_below="@id/menu_title"
-        android:layout_marginTop="100dp"/>
-
-    <Button
-        android:id="@+id/play_multi_player"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/play_multi_player"
-        android:layout_below="@id/play_single_player"/>
-
-    <Button
-        android:id="@+id/statistics"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/statistics"
-        android:layout_below="@id/play_multi_player"/>
-
-    <Button
-        android:id="@+id/exit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/exit"
-        android:layout_below="@id/statistics"/>
-
     <FrameLayout
-        android:id="@+id/statistics_content"
+        android:id="@+id/main_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </FrameLayout>

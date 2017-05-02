@@ -62,7 +62,7 @@ public class MultiPlayer extends MyAppActivity {
 
     @Override
     public void onBackPressed(){
-        if(getSupportFragmentManager().getBackStackEntryCount() > 0){
+        if(getFragmentManager().getBackStackEntryCount() > 0){
             //TODO notifica che vince l'altro
         }else {
             super.onBackPressed();

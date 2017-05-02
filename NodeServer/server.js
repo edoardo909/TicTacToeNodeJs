@@ -85,7 +85,11 @@ function getPlayersIDsAndConfirm(request, response){
 		     return err;
 		    }else {
                 for (var playerID in dataArray){
-                    playersIDs[playerID] = dataArray[playerID].token;
+                    if(playersIDs.length == 0){
+                        playersIDs[playerID] = dataArray[playerID].token;
+                    } else {
+                        playersIDs[playerID].push(dataArray[playerID].token);
+                    }
                 }
                 console.log("playersIDs", playersIDs);
                 isAnyPlayerWaitingForGame(request, response, playersIDs);
@@ -123,16 +127,15 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
                 arrayP2[i] = data[i].player2;
             }
             console.log("last dataArray: ", data[data.length-1]);
-            console.log("last player1: ", arrayP1[data.length-1]);
-            console.log("last player2: ", arrayP2[data.length-1]);
-            if ((arrayP2[data.length-1] == "" || arrayP2[data.length-1] == null) && arrayP1[data.length-1] != "playerone"  ){
-                createNewGameInstance(request, response, playersIDs);
-                return true;
-            } else {                        //TODO FIX STA MERDA DEL CAZZO CHE NON VUOLE FUNZIONARE
+            console.log("last player1: ", data[data.length-1].player1);
+            console.log("last player2: ", data[data.length-1].player2);
+            if (data[data.length-1].player1 != 'playerone' && (data[data.length-1].player2 == "" || data[data.length-1].player2 == null)  ){
                 createGameInstance(request, response, playersIDs);
-                return false;
+//                return true;
+            } else if(data[data.length-1].player1 == 'playerone'){                        //TODO FIX STA MERDA DEL CAZZO CHE NON VUOLE FUNZIONARE
+                createNewGameInstance(request, response, playersIDs);
+//                return false;
             }
-
         });
     });
 }
@@ -153,7 +156,7 @@ function createGameInstance(request, response, playersIDs){
                         IDArray[i] = data[i]._id;
                     }
                     console.log("Updating game instance with ID: ", IDArray[data.length-1]);
-                    if(arrayP1[data.length-1] != "playerone" || arrayP2[data.length-1] == null){ //c'è un record con ID=1, player1='playerone', player2='playertwo' che deve esistere, altrimenti non funziona
+                    if(arrayP1[data.length-1] != "playerone" || arrayP2[data.length-1] != "playertwo"){ //c'è un record con ID=1, player1='playerone', player2='playertwo' che deve esistere, altrimenti non funziona
                         collection.updateOne({_id: IDArray[data.length-1]},{$set: {player2: playersIDs[1]}},function(error, result){
                         if(error) throw error;
                         console.log("update outcome: ok");
@@ -168,7 +171,7 @@ function createNewGameInstance(request, response, playersIDs){
         if (error) throw error;
         autoIncrement.getNextSequence(db, "gameInstances", function(error, index){
             var collection = db.collection("gameInstances");
-
+            console.log("Creating New gameInstance");
             collection.insert({_id: index ,player1: playersIDs[0],function (error, result){
                 if(error) throw error;
                 console.log("insert outcome: ",result)
