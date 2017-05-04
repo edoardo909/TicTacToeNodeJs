@@ -16,6 +16,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import it.parello.tictactoenodejs.R;
+import it.parello.tictactoenodejs.activities.MultiPlayer;
 import it.parello.tictactoenodejs.activities.SinglePlayer;
 
 
@@ -26,7 +27,9 @@ import it.parello.tictactoenodejs.activities.SinglePlayer;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
-    public static String MessageReceived;
+    public String MessageReceived;
+    Intent intent;
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
@@ -39,6 +42,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+
+            if(remoteMessage.getData().containsKey("message") && remoteMessage.getData().containsValue("200")){
+                Log.e(TAG, "confirmGameRequest was received, starting the game");
+                intent = new Intent(getApplicationContext(),MultiPlayer.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+            }
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.

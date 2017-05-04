@@ -3,26 +3,13 @@ package it.parello.tictactoenodejs.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
-import it.parello.tictactoenodejs.activities.MultiPlayer;
-import it.parello.tictactoenodejs.activities.SinglePlayer;
-import it.parello.tictactoenodejs.async.SendOnlineGameRequest;
-import it.parello.tictactoenodejs.service.AsyncResponse;
-
-import static it.parello.tictactoenodejs.service.Cpu.getDrawCounter;
-import static it.parello.tictactoenodejs.service.Cpu.getLoseCounter;
-import static it.parello.tictactoenodejs.service.Cpu.getWinCounter;
 
 /**
  * Created by Parello on 02/05/2017.
@@ -34,8 +21,8 @@ public class MenuFragment extends Fragment {
 
 
     public interface OnMenuFragmentListener {
-        void playAlone();
-        void playWithFriends();
+        void singleplayer();
+        void multiplayer();
         void exit();
         void statistics();
     }
@@ -86,8 +73,8 @@ public class MenuFragment extends Fragment {
         findViews(layout);
 
 
-        playAlone.setOnClickListener(e -> mListener.playAlone());
-        playOnline.setOnClickListener(e -> mListener.playWithFriends());
+        playAlone.setOnClickListener(e -> mListener.singleplayer());
+        playOnline.setOnClickListener(e -> mListener.multiplayer());
         statistics.setOnClickListener(e -> mListener.statistics());
         exit.setOnClickListener(e -> mListener.exit());
 

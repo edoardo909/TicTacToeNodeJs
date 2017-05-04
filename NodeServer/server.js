@@ -23,7 +23,7 @@ var payload = {
 
 var gameConfirmation = {
 	data: {
-		message: "ok",
+		message: "StartGame",
 		responseCode: "200"
 	}
 }
@@ -63,7 +63,7 @@ function readTokenFromDatabase(request, response){
 
 function sendTestNotification(request, response, tokens){
 	 response.send('Our first route is working: ' + tokens);
-	admin.messaging().sendToDevice(tokens, payload).then(function(response){
+	admin.messaging().sendToDevice(tokens, gameConfirmation).then(function(response){
 		console.log("Successfully sent message: ",response);
 	}).catch(function(error){
 		console.log("Error sending message: ", error);
@@ -93,85 +93,83 @@ function getPlayersIDsAndConfirm(request, response){
                 }
                 console.log("playersIDs", playersIDs);
                 isAnyPlayerWaitingForGame(request, response, playersIDs);
-//                confirmGameRequestNotification(request, response, playersIDs);
-                response.send("200");
+
             }
 		});
     });
 }
 
-function confirmGameRequestNotification(request, response, playersIDs, startGameNotification){
-	admin.messaging().sendToDevice(playersIDs, startGameNotification).then(function(response){
+function confirmGameRequestNotification(request, response, playersIDs, gameConfirmation){
+	admin.messaging().sendToDevice(playersIDs, gameConfirmation).then(function(response){
 		console.log("Successfully sent message: ",response);
 	}).catch(function(error){
 		console.log("Error sending message: ", error);
 	});
 }
 function isAnyPlayerWaitingForGame(request, response, playersIDs){
-    //TODO controllo se esiste gia una gameInstance e se è gia piena di giocatori(.length>2)
-    //TODO poi se esiste e non è piena, inserisci giocatore; se esiste ed è piena creane un'altra; se non esiste, crea gameInstance
-    /**
-    *   Nella collection 'gameInstances' il primo record deve esistere prima di fare la prima chiamata:
-    *   ovvero: se la collection è vuota e mando una gameRequest , il db non restituisce nulla perchè l'array 'data' è di lunghezza 0
+    /*   controllo se esiste gia una gameInstance e se è gia piena di giocatori(.length>2)
+       poi se esiste e non è piena, inserisci giocatore; se esiste ed è piena creane un'altra; se non esiste, crea gameInstance
+
+       Nella collection 'gameInstances' il primo record deve esistere prima di fare la prima chiamata:
+       ovvero: se la collection è vuota e mando una gameRequest , il db non restituisce nulla perchè l'array 'data' è di lunghezza 0
     */
     mongoClient.connect(dbUrl, function(error,db){
         var collection = db.collection("gameInstances");
         if (error) throw error;
+        var nGameInstances = collection.count({}, function(error, count){
+            nGameInstances = count;
+        });
         collection.find().toArray(function(error, data){
-            if (error) return error;
-            var arrayP1 = new Array;
-            var arrayP2 = new Array;
-            for (var i = 1;i < data.length; i++ ){
-                arrayP1[i] = data[i].player1;
-                arrayP2[i] = data[i].player2;
-            }
-//            console.log("last dataArray: ", data[data.length-1]);
-            console.log("last player1: ", data[data.length-1].player1);
-            console.log("last player2: ", data[data.length-1].player2);
-            if (data[data.length-1].player1 != 'playerone' && (data[data.length-1].player2 == "" || data[data.length-1].player2 == null)  ){
-//                console.log("PLAYERsIDS prima", playersIDs)
-                playersIDs.push(request.body.GameRequest);
-                createGameInstance(request, response, playersIDs);
-//                console.log("PLAYERsIDS dopo", playersIDs)
-                return true;
-            } else if(data[data.length-1].player1 == 'playerone'){
+
+            var i = data.length-1;
+            console.log("nGameInstances", nGameInstances)
+            console.log("last gameId: ", data[i]);
+
+            if(nGameInstances == 1 || (data[i].player1 && data[i].player2) ){
                 createNewGameInstance(request, response, playersIDs);
-                return false;
+            }else if(data[i].player1 && !data[i].player2){
+//                console.log("PLAYERsIDS prima", playersIDs)
+                console.log("playerIDS before: ", data[i].player1 + " " + data[i].player2)
+                playersIDs.push(data[i].player1);              //TODO ZIOCAN ANCORA NON FUNZIONA!!
+                updateGameInstance(request, response, playersIDs);
+//                console.log("PLAYERsIDS dopo", playersIDs)
+                confirmGameRequestNotification(request, response, playersIDs, gameConfirmation);
+                console.log("playerIds at confirmation: ", playersIDs)
+                response.send("200");
+            } else if(!data[i].player1 && !data[i].player2){
+                createNewGameInstance(request, response, playersIDs);
+                response.send("503");
             }
         });
     });
 }
 
-function createGameInstance(request, response, playersIDs){
+function updateGameInstance(request, response, playersIDs){
     mongoClient.connect(dbUrl, function(error,db){
         var collection = db.collection("gameInstances");
         if (error) throw error;
         collection.find().toArray(function(error, data){
                     if (error) return error;
-                    var arrayP1 = new Array;
-                    var arrayP2 = new Array;
-                    var IDArray = new Array;
-                    for (var i = 1;i < data.length; i++ ){
-                        arrayP1[i] = data[i].player1;
-                        arrayP2[i] = data[i].player2;
-                        IDArray[i] = data[i]._id;
-                    }
-                    console.log("Updating game instance with ID: ", IDArray[data.length-1]);
-                    if(arrayP1[data.length-1] != "playerone" || arrayP2[data.length-1] != "playertwo"){ //c'è un record con ID=1, player1='playerone', player2='playertwo' che deve esistere, altrimenti non funziona
-                        collection.updateOne({_id: IDArray[data.length-1]},{$set: {player2: playersIDs[1]}},function(error, result){
+//                    var arrayP1 = new Array;
+//                    var arrayP2 = new Array;
+//                    var IDArray = new Array;
+//                    for (var i = 1;i < data.length; i++ ){
+//                        arrayP1[i] = data[i].player1;
+//                        arrayP2[i] = data[i].player2;
+//                        IDArray[i] = data[i]._id;
+//                    }
+                    var i = data.length-1;
+                    console.log("Updating game instance with ID: ", data[i]._id);
+                    if(data[i].player1 != "playerone" || data[i].player2 != "playertwo"){ //c'è un record con ID=1, player1='playerone', player2='playertwo' che deve esistere, altrimenti non funziona
+                        collection.updateOne({_id: data[i]._id},{$set: {player2: playersIDs[1]}},function(error, result){
                         if(error) throw error;
                         console.log("update outcome: ok");
                         })
                     }
         });
+
     });
-    var startGameNotification =  {
-        data: {
-            message: "StartGame",
-            responseCode: "200"
-        }
-    }
-    confirmGameRequestNotification(request, response, playersIDs, startGameNotification)
+
 }
 
 function createNewGameInstance(request, response, playersIDs){
@@ -200,7 +198,7 @@ function createNewGameInstance(request, response, playersIDs){
  server.post("/async", function(request, response){
 	console.log("intercepting asyncTask");
 	response.send("Node Server intercepting asyncTask");
-	console.log("Request Body (post): " , request.body);
+//	console.log("Request Body (post): " , request.body);
  });
  
  server.get("/async", function(request, response){
@@ -223,7 +221,7 @@ server.post("/async/gamerequest", function(request, response){
 
 	getPlayersIDsAndConfirm(request, response)
 
-	console.log("Request Body (post): " , request.body);
+//	console.log("Request Body (post): " , request.body);
 });
  
 
