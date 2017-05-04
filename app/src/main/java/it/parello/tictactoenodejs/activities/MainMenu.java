@@ -1,5 +1,7 @@
 package it.parello.tictactoenodejs.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.content.Intent;
@@ -8,15 +10,19 @@ import android.preference.PreferenceManager;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.async.SendOnlineGameRequest;
+import it.parello.tictactoenodejs.fragments.LoadingFragment;
 import it.parello.tictactoenodejs.fragments.MenuFragment;
 import it.parello.tictactoenodejs.fragments.Statistics;
 import it.parello.tictactoenodejs.service.AsyncResponse;
 import it.parello.tictactoenodejs.service.MyAppActivity;
+
+import static android.view.View.GONE;
 
 public class MainMenu extends MyAppActivity implements
         Statistics.OnFragmentInteractionListener, MenuFragment.OnMenuFragmentListener,AsyncResponse {
@@ -25,6 +31,9 @@ public class MainMenu extends MyAppActivity implements
     private static final String URL = "http://192.168.1.220:8888/async/gamerequest";
     Intent intent;
     private static final String TAG = "MainMenuActivity";
+    BroadcastReceiver broadcastReceiver;
+    ProgressBar progressBar;
+    Fragment loadingFragment = new LoadingFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +43,22 @@ public class MainMenu extends MyAppActivity implements
         if (null == savedInstanceState) {
             getFragmentManager().beginTransaction().add(R.id.main_fragment, menuFragment).addToBackStack(null).commit();
         }
+        progressBar = (ProgressBar) findViewById(R.id.progresss_bar);
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                progressBar.setVisibility(GONE);
+            }
+        };
 
     }
 
     @Override
     public void onBackPressed() {
         int count = getFragmentManager().getBackStackEntryCount();
-        if (count > 0) {
+        if (count > 1) {
             getFragmentManager().popBackStack();
+            progressBar.setVisibility(GONE);
         } else {
            exit();
         }
@@ -63,6 +80,7 @@ public class MainMenu extends MyAppActivity implements
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String myToken = prefs.getString("firebase-token","you fucked up somewhere");
         Log.e(TAG, myToken);
+        progressBar.setVisibility(View.VISIBLE);
         SendOnlineGameRequest sgr = new SendOnlineGameRequest(this);
         Log.d(TAG,"Sending Online Game Request Async Task");
         sgr.execute(URL, myToken);

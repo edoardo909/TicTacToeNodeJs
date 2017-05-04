@@ -1,5 +1,6 @@
 package it.parello.tictactoenodejs.firebase;
 
+import android.app.Application;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -27,6 +28,7 @@ import it.parello.tictactoenodejs.activities.SinglePlayer;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+    public static final String INTENT_FILTER = "INTENT_FILTER";
     public String MessageReceived;
     Intent intent;
 
@@ -45,10 +47,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if(remoteMessage.getData().containsKey("message") && remoteMessage.getData().containsValue("200")){
                 Log.e(TAG, "confirmGameRequest was received, starting the game");
+                intent = new Intent(INTENT_FILTER);
+                sendBroadcast(intent);
                 intent = new Intent(getApplicationContext(),MultiPlayer.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {

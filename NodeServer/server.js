@@ -8,7 +8,6 @@ var autoIncrement = require("mongodb-autoincrement");
 
 var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
 
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://tictactoenodejs.firebaseio.com/"
@@ -32,6 +31,14 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({
   extended: true
 }));
+
+mongoClient.connect(dbUrl, function(error, db){
+    var collection = db.collection("gameInstances");
+    if (error) throw error;
+    collection.insertOne({_id:1,player1:"playerone",player2:"playertwo"},function(error, result){
+        if(error) return;
+    });
+})
 
 function writeTokenToDatabase(request){
 	mongoClient.connect(dbUrl, function(error, db){
