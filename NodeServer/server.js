@@ -20,12 +20,7 @@ var payload = {
   }
 };
 
-var gameConfirmation = {
-	data: {
-		message: "StartGame",
-		responseCode: "200"
-	}
-}
+
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({
@@ -77,7 +72,7 @@ function sendTestNotification(request, response, tokens){
 	});
 }
 
-function getPlayersIDsAndConfirm(request, response){
+function getPlayersIDs(request, response){
 	mongoClient.connect(dbUrl, function(error, db){
 		var collection = db.collection('token');
 		if(error) throw error;
@@ -126,20 +121,33 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
         var nGameInstances = collection.count({}, function(error, count){
             nGameInstances = count;
         });
-        collection.find().toArray(function(error, data){
 
+        collection.find().toArray(function(error, data){
             var i = data.length-1;
             console.log("nGameInstances", nGameInstances)
             console.log("last gameId: ", data[i]);
+            var gameErrorMessage = {
+                data: {
+                    message: "ERROR",
+                    responseCode: "500",
+                    gameInstanceID: '' + data[i]._id
+                }
+            }
 
-            if(nGameInstances == 1 || (data[i].player1 && data[i].player2) ){
+            if((nGameInstances == 1 || (data[i].player1 && data[i].player2)) ){
                 createNewGameInstance(request, response, playersIDs);
             }else if(data[i].player1 && !data[i].player2){
-//                console.log("PLAYERsIDS prima", playersIDs)
+                console.log("PLAYERsIDS prima", playersIDs)
                 console.log("playerIDS before: ", data[i].player1 + " " + data[i].player2)
-                playersIDs.push(data[i].player1);              //TODO ZIOCAN ANCORA NON FUNZIONA!!
+                playersIDs.push(data[i].player1);
                 updateGameInstance(request, response, playersIDs);
-//                console.log("PLAYERsIDS dopo", playersIDs)
+                var gameConfirmation = {
+                	data: {
+                		message: "StartGame",
+                		responseCode: "200",
+                		gameInstanceID: '' + data[i]._id
+                	}
+                }
                 confirmGameRequestNotification(request, response, playersIDs, gameConfirmation);
                 console.log("playerIds at confirmation: ", playersIDs)
                 response.send("200");
@@ -147,6 +155,13 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
                 createNewGameInstance(request, response, playersIDs);
                 response.send("503");
             }
+            if(data[i].player1 == data[i].player2 || playersIDs[0] == playersIDs[1]){
+                deleteGameInstance(request, response, data[i]);
+                sendErrorNotification(request, response, playersIDs, gameErrorMessage);
+                console.log("same fucking IDs in gameInstance!! =(")
+                return;
+            }
+
         });
     });
 }
@@ -157,18 +172,10 @@ function updateGameInstance(request, response, playersIDs){
         if (error) throw error;
         collection.find().toArray(function(error, data){
                     if (error) return error;
-//                    var arrayP1 = new Array;
-//                    var arrayP2 = new Array;
-//                    var IDArray = new Array;
-//                    for (var i = 1;i < data.length; i++ ){
-//                        arrayP1[i] = data[i].player1;
-//                        arrayP2[i] = data[i].player2;
-//                        IDArray[i] = data[i]._id;
-//                    }
                     var i = data.length-1;
                     console.log("Updating game instance with ID: ", data[i]._id);
                     if(data[i].player1 != "playerone" || data[i].player2 != "playertwo"){ //c'è un record con ID=1, player1='playerone', player2='playertwo' che deve esistere, altrimenti non funziona
-                        collection.updateOne({_id: data[i]._id},{$set: {player2: playersIDs[1]}},function(error, result){
+                        collection.updateOne({_id: data[i]._id},{$set: {player2: playersIDs[0]}},function(error, result){
                         if(error) throw error;
                         console.log("update outcome: ok");
                         })
@@ -190,13 +197,28 @@ function createNewGameInstance(request, response, playersIDs){
                 console.log("insert outcome: ",result)
                 }
             })
-            //TODO waitForOtherPlayer()
         })
     });
 }
 
+function deleteGameInstance(request, response, instanceID){
+    mongoClient.connect(dbUrl, function(error, db){
+        if (error) throw error;
+        var collection = db.collection("gameInstances");
+        collection.deleteOne({_id: instanceID},function(error, result){
+            if (error) throw error;
+        })
+    })
+}
 
 
+function sendErrorNotification(request, response, playersIDs, gameErrorMessage){
+    admin.messaging().sendToDevice(playersIDs, gameErrorMessage).then(function(response){
+    		console.log("Successfully sent message: ",response);
+    	}).catch(function(error){
+    		console.log("Error sending message: ", error);
+    	});
+}
  server.get("/home", function(request, response){
 	 console.log("HOMEPAGE")
 	 response.send("HomePage.<br />Still haven't decided what to do with it. <br />-try going to '/token' for now")
@@ -226,7 +248,7 @@ server.post("/async/gamerequest", function(request, response){
 	var requestAddress = request.connection.remoteAddress;
 	console.log("request from: ", requestAddress);
 
-	getPlayersIDsAndConfirm(request, response)
+	getPlayersIDs(request, response)
 
 //	console.log("Request Body (post): " , request.body);
 });
