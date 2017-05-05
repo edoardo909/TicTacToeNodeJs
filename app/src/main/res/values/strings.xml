@@ -24,4 +24,6 @@
     <string name="exit">Exit Game</string>
     <string name="sp_match_win_count">Single Player Wins: Loses: Draws:</string>
     <string name="mp_match_win_count">Multiplayer Wins: Loses: Draws:</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

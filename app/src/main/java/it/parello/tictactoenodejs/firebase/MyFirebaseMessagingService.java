@@ -30,8 +30,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public String MessageReceived;
     Intent intent;
     public static final String INTENT_FILTER = "INTENT_FILTER";
-
-
+    boolean intentLaunched = false;
+    public static int instanceId;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
@@ -46,10 +46,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
             if(remoteMessage.getData().containsValue("StartGame") && remoteMessage.getData().containsValue("200")){
-                Log.e(TAG, "confirmGameRequest was received, starting the game");
-                intent = new Intent(getApplicationContext(),MultiPlayer.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                if(!intentLaunched) {
+                    intentLaunched = true;
+                    instanceId = Integer.parseInt(remoteMessage.getData().get("gameInstanceID"));
+                    Log.e(TAG, "confirmGameRequest was received, starting the game");
+                    intent = new Intent(getApplicationContext(), MultiPlayer.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
             }else if(remoteMessage.getData().containsValue("ERROR") && remoteMessage.getData().containsValue("500")){
                     intent = new Intent(INTENT_FILTER);
                     sendBroadcast(intent);

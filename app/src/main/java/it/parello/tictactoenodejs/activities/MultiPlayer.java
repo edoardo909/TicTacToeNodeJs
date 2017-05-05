@@ -1,20 +1,28 @@
 package it.parello.tictactoenodejs.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
+import it.parello.tictactoenodejs.async.ForfeitGameTask;
+import it.parello.tictactoenodejs.firebase.MyFirebaseMessagingService;
 import it.parello.tictactoenodejs.listeners.MPClickListener;
+import it.parello.tictactoenodejs.service.AsyncResponse;
 import it.parello.tictactoenodejs.service.MyAppActivity;
 
-public class MultiPlayer extends MyAppActivity {
+public class MultiPlayer extends MyAppActivity implements AsyncResponse {
 
     Button restart;
     public static int mpMark[][];
     public static int i, j = 0;
     public static Button mpButtons[][];
     public static TextView mpTextView;
+    private static final String TAG = "MultiPlayerActivity";
+    private static final String URL = "http://192.168.1.220:8888/async/forfeit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,27 +70,43 @@ public class MultiPlayer extends MyAppActivity {
 
     @Override
     public void onBackPressed(){
-        if(getFragmentManager().getBackStackEntryCount() > 0){
-            //TODO notifica che vince l'altro
-        }else {
-            super.onBackPressed();
+        finishGame();
+    }
+
+    private void finishGame(){
+        if(!isGameOver()){
+            ForfeitGameTask forfeitGameTask = new ForfeitGameTask(this);
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.setTitle("Quit Game?");
+            alertBuilder.setMessage("you will forfeit");
+            alertBuilder.setCancelable(false);
+            alertBuilder.setPositiveButton(R.string.yes, (d, j)-> {
+                    forfeitGameTask.execute(URL, String.valueOf(MyFirebaseMessagingService.instanceId));
+                    finish();
+            }).setNegativeButton(R.string.no, (d, j)->{
+                    d.cancel();
+            });
+            AlertDialog alertDialog = alertBuilder.create();
+            alertDialog.show();
         }
-    }
-
-    private void waitForOpponentToConnect(){
-        //TODO
-    }
-
-    private void listenForIncomingGameData(){
-        //TODO
-    }
-
-    private void waitForOpponentMove(){
-        //TODO
     }
 
     private boolean isGameOver(){
         return false;
     }
 
+    @Override
+    public void onProcessFinished(String response) {
+        Log.d(TAG,"Sending Online Game Request Async Task Finish");
+        if (response.equals("gameCancelled")){
+            setGameOver();
+            onBackPressed();
+        }
+        Log.i(TAG, "multiplayer process finished");
+    }
+
+    private void setGameOver() {
+        Log.i(TAG, "you lost the game");
+        //TODO put value into statistics
+    }
 }

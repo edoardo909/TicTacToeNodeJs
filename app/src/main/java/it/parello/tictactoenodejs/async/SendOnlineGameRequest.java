@@ -21,25 +21,17 @@ public class SendOnlineGameRequest extends AsyncTask<String, Integer, String> {
 
     private static final String TAG = "SendOnlineGameRequest";
     public AsyncResponse responseListener;
-//    ProgressBar progressBar;
-//    int progressStatus = 0;
+
     public SendOnlineGameRequest(AsyncResponse listener){
         this.responseListener = listener;
     }
 
 
     @Override
-    protected void onPreExecute(){
-        super.onPreExecute();
-//        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     protected String doInBackground(String... params) {
         String data = "";
 
         HttpURLConnection httpURLConnection = null;
-//        while(progressStatus < 100) {
             try {
 
                 httpURLConnection = (HttpURLConnection) new URL(params[0]).openConnection();
@@ -54,12 +46,7 @@ public class SendOnlineGameRequest extends AsyncTask<String, Integer, String> {
                 Log.d(TAG, "sending gamerequest");
                 InputStream in = httpURLConnection.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(in);
-//                try {
-//                    Thread.sleep(1000);
-//                    publishProgress(progressStatus);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
+
                 int inputStreamData = inputStreamReader.read();
                 while (inputStreamData != -1) {
                     char current = (char) inputStreamData;
@@ -73,21 +60,14 @@ public class SendOnlineGameRequest extends AsyncTask<String, Integer, String> {
                     httpURLConnection.disconnect();
                 }
             }
-//        }
         return data;
     }
-
-//    @Override
-//    protected void onProgressUpdate(Integer...values){
-//        progressBar.setProgress(values[0]);
-//    }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         Log.e(TAG , result);
         responseListener.onProcessFinished(result);
-//        progressBar.setVisibility(View.GONE);
     }
 
 

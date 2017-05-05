@@ -171,15 +171,16 @@ function updateGameInstance(request, response, playersIDs){
         var collection = db.collection("gameInstances");
         if (error) throw error;
         collection.find().toArray(function(error, data){
-                    if (error) return error;
-                    var i = data.length-1;
-                    console.log("Updating game instance with ID: ", data[i]._id);
-                    if(data[i].player1 != "playerone" || data[i].player2 != "playertwo"){ //c'è un record con ID=1, player1='playerone', player2='playertwo' che deve esistere, altrimenti non funziona
-                        collection.updateOne({_id: data[i]._id},{$set: {player2: playersIDs[0]}},function(error, result){
-                        if(error) throw error;
-                        console.log("update outcome: ok");
-                        })
-                    }
+            if (error) return error;
+            var i = data.length-1;
+            console.log("Updating game instance with ID: ", data[i]._id);
+            //c'è un record con ID=1, player1='playerone', player2='playertwo' che viene creato all'avvio del server
+            if(data[i].player1 != "playerone" || data[i].player2 != "playertwo"){
+                collection.updateOne({_id: data[i]._id},{$set: {player2: playersIDs[0]}},function(error, result){
+                if(error) throw error;
+                console.log("update outcome: ok");
+                })
+            }
         });
 
     });
@@ -205,6 +206,7 @@ function deleteGameInstance(request, response, instanceID){
     mongoClient.connect(dbUrl, function(error, db){
         if (error) throw error;
         var collection = db.collection("gameInstances");
+        console.log("deleting instance with id", instanceID)
         collection.deleteOne({_id: instanceID},function(error, result){
             if (error) throw error;
         })
@@ -219,6 +221,15 @@ function sendErrorNotification(request, response, playersIDs, gameErrorMessage){
     		console.log("Error sending message: ", error);
     	});
 }
+
+function sendGameEndedNotification(request, response, playersIDs, gameEndedMessage){
+    admin.messaging().sendToDevice(playersIDs, gameErrorMessage).then(function(response){
+        console.log("Successfully sent message: ",response);
+    }).catch(function(error){
+        console.log("Error sending message: ", error);
+    });
+}
+
  server.get("/home", function(request, response){
 	 console.log("HOMEPAGE")
 	 response.send("HomePage.<br />Still haven't decided what to do with it. <br />-try going to '/token' for now")
@@ -247,26 +258,28 @@ server.post("/async/gamerequest", function(request, response){
 	console.log("intercepting gamerequest");
 	var requestAddress = request.connection.remoteAddress;
 	console.log("request from: ", requestAddress);
-
 	getPlayersIDs(request, response)
-
-//	console.log("Request Body (post): " , request.body);
 });
  
+server.get("/async/forfeit", function(request, response){
+    console.log("getting game forfeit");
+    response.send("Getting forfeit");
+});
 
+server.post("/async/forfeit", function(request, response){
+    console.log("intercepting game forfeit");
+    response.send("gameCancelled");
+    //TODO deleteGameInstance =)
+});
 
 server.get("/token", function(request, response){
 	readTokenFromDatabase(request, response);
 	console.log("Request Body: " , request.body);
-	
 });
 		
 server.post("/token", function(request, response){
 	response.send("You sent a post request =] ")
-	
 	writeTokenToDatabase(request);
-	
-	console.log("POST INTERCEPTING =]")
 	console.log("data: ", request.get('token'))
 	console.log("Request Body (post): " , request.body);
 });		

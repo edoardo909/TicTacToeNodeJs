@@ -46,7 +46,7 @@ public class MainMenu extends MyAppActivity implements
             @Override
             public void onReceive(Context context, Intent intent) {
                 onBackPressed();
-                Toast.makeText(getApplicationContext(),"An error occured on the server, try again", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(),"An error occured on the server, try again", Toast.LENGTH_LONG).show();
             }
          };
     }
