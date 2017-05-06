@@ -1,7 +1,7 @@
 var notifications = require("./notifications.js");
 var mongoClient = require("mongodb").MongoClient;
 
-var dbUrl = 'mongodb://localhost:27017/androidTokens';
+var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
 
 exports.getPlayersIDs = getPlayersIDs;
 exports.deleteGameInstance = deleteGameInstance;

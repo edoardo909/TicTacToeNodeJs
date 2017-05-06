@@ -8,7 +8,7 @@ var autoIncrement = require("mongodb-autoincrement");
 var tokenController = require("./tokenController.js");
 var gameController = require("./gameController.js");
 
-var dbUrl = 'mongodb://localhost:27017/androidTokens';
+var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
