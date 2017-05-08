@@ -84,7 +84,7 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
                 response.send("503");
             }
             if(data[i].player1 == data[i].player2 || playersIDs[0] == playersIDs[1]){
-                deleteGameInstance(request, response, data[i]);
+                deleteGameInstance(request, response, parseInt(data[i]));
                 notifications.sendErrorNotification(request, response, playersIDs, gameErrorMessage);
                 console.log("same fucking IDs in gameInstance!! =(")
                 return;
@@ -130,13 +130,29 @@ function createNewGameInstance(request, response, playersIDs){
     });
 }
 
+
+
 function deleteGameInstance(request, response, instanceID){
+    var gameEndedMessage = {
+        data: {
+            message: "gameEnded",
+            responseCode: "503",
+            gameInstanceID: instanceID
+        }
+    }
     mongoClient.connect(dbUrl, function(error, db){
         if (error) throw error;
         var collection = db.collection("gameInstances");
-        console.log("deleting instance with id", instanceID)
-        collection.deleteOne({_id: instanceID},function(error, result){
-            if (error) throw error;
+        console.log("deleting instance with id", parseInt(instanceID))
+        collection.findOne({_id: parseInt(instanceID)}, function(err, result){
+            if(err) return err;
+            if(result.player1 || result.player2 ){
+            var playersIDs = [result.player1, result.player2]
+            notifications.sendGameEndedNotification(request, response, playersIDs, gameEndedMessage);
+            } else return err;
+        })
+        collection.deleteOne({_id: parseInt(instanceID)},function(err, result){
+            if (err) throw err;
         })
     })
 }

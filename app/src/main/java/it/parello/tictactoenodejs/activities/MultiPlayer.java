@@ -1,12 +1,20 @@
 package it.parello.tictactoenodejs.activities;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.async.ForfeitGameTask;
@@ -22,6 +30,8 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     public static int i, j = 0;
     public static Button mpButtons[][];
     public static TextView mpTextView;
+    AlertDialog alertDialog;
+    LocalBroadcastManager localBroadcastManager;
     private static final String TAG = "MultiPlayerActivity";
     private static final String URL = "http://192.168.1.220:8888/async/forfeit";
 
@@ -34,7 +44,20 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         restart.setOnClickListener(l->{
             setBoard();
         });
+        localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+        IntentFilter intentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_GAME_END);
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+
     }
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, "porco il clero se funziona qua perchè non va???");
+            Toast.makeText(getApplicationContext(), "Game forfeit from other player, YOU WIN =) ", Toast.LENGTH_LONG);
+            finish();
+        }
+    };
 
     private void setBoard() {
         mpButtons = new Button[4][4];
@@ -88,7 +111,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             }).setNegativeButton(R.string.no, (d, j)->{
                     d.cancel();
             });
-            AlertDialog alertDialog = alertBuilder.create();
+            alertDialog = alertBuilder.create();
             alertDialog.show();
         }
     }
@@ -102,7 +125,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         Log.d(TAG,"Sending Online Game Request Async Task Finish");
         if (response.equals("gameCancelled")){
             setGameOver();
-            onBackPressed();
+            alertDialog.dismiss();
         }
         Log.i(TAG, "multiplayer process finished");
     }
@@ -110,5 +133,12 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     private void setGameOver() {
         Log.i(TAG, "you lost the game");
         //TODO put value into statistics
+    }
+
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 }

@@ -2,18 +2,21 @@ package it.parello.tictactoenodejs.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.async.SendOnlineGameRequest;
+import it.parello.tictactoenodejs.firebase.MyFirebaseMessagingService;
 import it.parello.tictactoenodejs.fragments.MenuFragment;
 import it.parello.tictactoenodejs.fragments.Statistics;
 import it.parello.tictactoenodejs.service.AsyncResponse;
@@ -29,8 +32,8 @@ public class MainMenu extends MyAppActivity implements
     private static final String URL = "http://192.168.1.220:8888/async/gamerequest";
     Intent intent;
     private static final String TAG = "MainMenuActivity";
-    BroadcastReceiver broadcastReceiver;
     ProgressBar progressBar;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +44,20 @@ public class MainMenu extends MyAppActivity implements
         if (null == savedInstanceState) {
             getFragmentManager().beginTransaction().add(R.id.main_fragment, menuFragment).addToBackStack(null).commit();
         }
-        broadcastReceiver = new BroadcastReceiver() {
+        localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+        IntentFilter intentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_ERROR);
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
 
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                onBackPressed();
-                Toast.makeText(getApplicationContext(),"An error occured on the server, try again", Toast.LENGTH_LONG).show();
-            }
-         };
     }
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(getApplicationContext(), "An error occured on the server, try again", Toast.LENGTH_LONG).show();
+            onBackPressed();
+        }
+    };
 
     @Override
     public void onBackPressed() {
@@ -118,5 +126,11 @@ public class MainMenu extends MyAppActivity implements
     public void onResume(){
         super.onResume();
         progressBar.setVisibility(GONE);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 }

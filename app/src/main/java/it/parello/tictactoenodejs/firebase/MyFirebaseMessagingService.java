@@ -2,10 +2,12 @@ package it.parello.tictactoenodejs.firebase;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
@@ -29,9 +31,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
     public String MessageReceived;
     Intent intent;
-    public static final String INTENT_FILTER = "INTENT_FILTER";
+    public static final String INTENT_FILTER_ERROR = "it.parello.tictactoenodejs.ERROR";
+    public static final String INTENT_FILTER_GAME_END = "it.parello.tictactoenodejs.GAME_END";
     boolean intentLaunched = false;
     public static int instanceId;
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
@@ -55,9 +59,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     startActivity(intent);
                 }
             }else if(remoteMessage.getData().containsValue("ERROR") && remoteMessage.getData().containsValue("500")){
-                    intent = new Intent(INTENT_FILTER);
-                    sendBroadcast(intent);
-                Log.e(TAG, "An error occured on the server, try again");
+                    intent = new Intent(INTENT_FILTER_ERROR);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                    Log.e(TAG, "An error occured on the server, try again");
+            }else if(remoteMessage.getData().containsValue("gameEnded") && remoteMessage.getData().containsValue("503")){
+                    Log.e(TAG, "game was ended by other player, you Win! =)");
+                    intent = new Intent(INTENT_FILTER_GAME_END);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {

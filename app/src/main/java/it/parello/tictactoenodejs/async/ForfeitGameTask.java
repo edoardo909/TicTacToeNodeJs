@@ -2,9 +2,9 @@ package it.parello.tictactoenodejs.async;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -51,7 +51,7 @@ public class ForfeitGameTask extends AsyncTask<String,Void,String> {
                 inputStreamData = inputStreamReader.read();
                 data += current;
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (httpURLConnection != null) {
@@ -66,7 +66,6 @@ public class ForfeitGameTask extends AsyncTask<String,Void,String> {
         super.onPostExecute(result);
         Log.e(TAG , "forfeit response: " + result);
         responseListener.onProcessFinished(result);
-        this.cancel(true);
     }
 
 }

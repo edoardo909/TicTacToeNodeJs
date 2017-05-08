@@ -67,7 +67,7 @@ server.post("/async/forfeit", function(request, response){
     console.log("intercepting game forfeit");
     console.log("forfeit body: ", request.body)
     response.send("gameCancelled");
-    deleteGameInstance(request, response, request.body.ForfeitRequest)
+    gameController.deleteGameInstance(request, response, request.body.ForfeitRequest)
 });
 
 server.get("/token", function(request, response){
