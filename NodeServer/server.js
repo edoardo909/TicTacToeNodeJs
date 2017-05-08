@@ -4,7 +4,6 @@ var express = require("express");
 var server = express();
 var serviceAccount = require("./TicTacToeNodeJs-da99a621f809.json");
 var mongoClient = require("mongodb").MongoClient;
-var autoIncrement = require("mongodb-autoincrement");
 var tokenController = require("./tokenController.js");
 var gameController = require("./gameController.js");
 
@@ -66,8 +65,9 @@ server.get("/async/forfeit", function(request, response){
 
 server.post("/async/forfeit", function(request, response){
     console.log("intercepting game forfeit");
+    console.log("forfeit body: ", request.body)
     response.send("gameCancelled");
-    //TODO deleteGameInstance =)
+    deleteGameInstance(request, response, request.body.ForfeitRequest)
 });
 
 server.get("/token", function(request, response){
@@ -82,6 +82,6 @@ server.post("/token", function(request, response){
 	console.log("Request Body (post): " , request.body);
 });		
 
-server.listen(8888, function(){
+server.listen(8888,'192.168.1.220', function(){
 	console.log("Server started on http://192.168.1.220:8888/");
 });

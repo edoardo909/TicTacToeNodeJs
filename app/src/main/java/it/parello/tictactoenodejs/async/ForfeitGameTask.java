@@ -66,6 +66,7 @@ public class ForfeitGameTask extends AsyncTask<String,Void,String> {
         super.onPostExecute(result);
         Log.e(TAG , "forfeit response: " + result);
         responseListener.onProcessFinished(result);
+        this.cancel(true);
     }
 
 }

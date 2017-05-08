@@ -2,6 +2,7 @@ package it.parello.tictactoenodejs.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -82,6 +83,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             alertBuilder.setCancelable(false);
             alertBuilder.setPositiveButton(R.string.yes, (d, j)-> {
                     forfeitGameTask.execute(URL, String.valueOf(MyFirebaseMessagingService.instanceId));
+
                     finish();
             }).setNegativeButton(R.string.no, (d, j)->{
                     d.cancel();

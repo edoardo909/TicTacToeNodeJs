@@ -1,5 +1,6 @@
 var notifications = require("./notifications.js");
 var mongoClient = require("mongodb").MongoClient;
+var autoIncrement = require("mongodb-autoincrement");
 
 var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
 
