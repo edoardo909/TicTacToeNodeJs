@@ -18,7 +18,7 @@ var options = {
 };
 
 function sendTestNotification(request, response, tokens){
-	 response.send('Our first route is working: ' + tokens);
+	response.send('Our first route is working: ' + tokens);
 	admin.messaging().sendToDevice(tokens, payload, options).then(function(response){
 		console.log("Successfully sent message: ",response);
 	}).catch(function(error){
@@ -26,8 +26,13 @@ function sendTestNotification(request, response, tokens){
 	});
 }
 
-function confirmGameRequestNotification(request, response, playersIDs, gameConfirmation){
-	admin.messaging().sendToDevice(playersIDs, gameConfirmation, options).then(function(response){
+function confirmGameRequestNotification(request, response, playersIDs, gameConfirmationP1, gameConfirmationP2){
+    admin.messaging().sendToDevice(playersIDs[0], gameConfirmationP1, options).then(function(response){
+        console.log("Successfully sent message: ",response);
+    }).catch(function(error){
+        console.log("Error sending message: ", error);
+    });
+	admin.messaging().sendToDevice(playersIDs[1], gameConfirmationP2, options).then(function(response){
 		console.log("Successfully sent message: ",response);
 	}).catch(function(error){
 		console.log("Error sending message: ", error);
@@ -35,7 +40,7 @@ function confirmGameRequestNotification(request, response, playersIDs, gameConfi
 }
 
 function sendErrorNotification(request, response, playersIDs, gameErrorMessage){
-    admin.messaging().sendToDevice(playersIDs, gameErrorMessage).then(function(response){
+        admin.messaging().sendToDevice(playersIDs, gameErrorMessage).then(function(response){
     		console.log("Successfully sent message: ",response);
     	}).catch(function(error){
     		console.log("Error sending message: ", error);

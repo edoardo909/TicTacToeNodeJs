@@ -6,18 +6,28 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.async.ForfeitGameTask;
+import it.parello.tictactoenodejs.async.SendGameDataTask;
 import it.parello.tictactoenodejs.firebase.MyFirebaseMessagingService;
 import it.parello.tictactoenodejs.listeners.MPClickListener;
 import it.parello.tictactoenodejs.service.AsyncResponse;
@@ -33,7 +43,10 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     AlertDialog alertDialog;
     LocalBroadcastManager localBroadcastManager;
     private static final String TAG = "MultiPlayerActivity";
-    private static final String URL = "http://192.168.1.220:8888/async/forfeit";
+    private static final String forfeitURL = "http://192.168.1.220:8888/async/forfeit";
+    private static final String URL = "http://192.168.1.220:8888/async/game";
+    SharedPreferences sharedPreferences;
+    String [] tempBoardData = {"O","O","X"," ","X"," "," "," "," ",};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,21 +60,23 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         IntentFilter intentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_GAME_END);
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
-
+        Log.e(TAG,"player Marker: " + String.valueOf(getIntent().getStringExtra("playerMarker")));
     }
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e(TAG, "porco il clero se funziona qua perchè non va???");
-            Toast.makeText(getApplicationContext(), "Game forfeit from other player, YOU WIN =) ", Toast.LENGTH_LONG);
+            Log.e(TAG, "Game forfeit from other player, YOU WIN =)");
+            Toast.makeText(getApplicationContext(), "Game was forfeit", Toast.LENGTH_LONG).show();
+            final Handler handler = new Handler();
+            handler.postDelayed(()-> {}, Toast.LENGTH_LONG +10);
             finish();
         }
     };
 
     private void setBoard() {
-        mpButtons = new Button[4][4];
-        mpMark = new int[4][4];
+        mpButtons = new Button[3][3];
+        mpMark = new int[3][3];
         mpButtons[0][2] = (Button) findViewById(R.id.b1);
         mpButtons[0][1] = (Button) findViewById(R.id.b2);
         mpButtons[0][0] = (Button) findViewById(R.id.b3);
@@ -81,9 +96,26 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         }
 
         mpTextView.setText("Click a button to start.");
+        String playerMarker = String.valueOf(getIntent().getStringExtra("playerMarker"));
         for (i = 0; i <= 2; i++) {
             for (j = 0; j <= 2; j++) {
-                mpButtons[i][j].setOnClickListener(new MPClickListener(i, j));
+                int x = i;
+                int y = j;
+                mpButtons[i][j].setOnClickListener(l-> {
+                        Log.d(TAG,"button "+ mpButtons[x][y] + " clicked");
+                        if (mpButtons[x][y].isEnabled()) {
+                            mpButtons[x][y].setEnabled(false);
+                            if(playerMarker.equals("O")) {
+                                mpButtons[x][y].setText("O");
+                                mpMark[x][y] = 0;
+                            }else if(playerMarker.equals("X")){
+                                mpButtons[x][y].setText("X");
+                                mpMark[x][y] = 1;
+                            }
+                            sendGameDataJson();
+                            mpTextView.setText("");
+                        }
+                });
                 if (!mpButtons[i][j].isEnabled()) {
                     mpButtons[i][j].setText(" ");
                     mpButtons[i][j].setEnabled(true);
@@ -105,7 +137,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             alertBuilder.setMessage("you will forfeit");
             alertBuilder.setCancelable(false);
             alertBuilder.setPositiveButton(R.string.yes, (d, j)-> {
-                    forfeitGameTask.execute(URL, String.valueOf(MyFirebaseMessagingService.instanceId));
+                    forfeitGameTask.execute(forfeitURL, String.valueOf(MyFirebaseMessagingService.instanceId));
 
                     finish();
             }).setNegativeButton(R.string.no, (d, j)->{
@@ -135,6 +167,23 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         //TODO put value into statistics
     }
 
+    private void sendGameDataJson(){
+        JSONObject gameData = new JSONObject();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String myToken = sharedPreferences.getString("firebase-token","you fucked up somewhere");
+        String playerID = myToken.substring(0,12);
+        try {
+            gameData.put("player_id", playerID);
+            gameData.put("game_id", MyFirebaseMessagingService.instanceId);
+            gameData.put("board_data", Arrays.toString(tempBoardData) );
+            gameData.put("winner", false);
+            Log.d(TAG,"Executing task: sending gamedata");
+            new SendGameDataTask().execute(URL,gameData.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     protected void onDestroy(){

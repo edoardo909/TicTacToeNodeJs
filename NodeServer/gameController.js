@@ -36,6 +36,8 @@ function getPlayersIDs(request, response){
     });
 }
 
+
+
 function isAnyPlayerWaitingForGame(request, response, playersIDs){
     /*   controllo se esiste gia una gameInstance e se è gia piena di giocatori(.length>2)
        poi se esiste e non è piena, inserisci giocatore; se esiste ed è piena creane un'altra; se non esiste, crea gameInstance
@@ -69,14 +71,23 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
                 console.log("playerIDS before: ", data[i].player1 + " " + data[i].player2)
                 playersIDs.push(data[i].player1);
                 updateGameInstance(request, response, playersIDs);
-                var gameConfirmation = {
-                	data: {
-                		message: "StartGame",
-                		responseCode: "200",
-                		gameInstanceID: '' + data[i]._id
-                	}
-                }
-                notifications.confirmGameRequestNotification(request, response, playersIDs, gameConfirmation);
+                var gameConfirmationP1 = {
+                                    data: {
+                                        message: "StartGame",
+                                        responseCode: "200",
+                                        gameInstanceID: '' + data[i]._id,
+                                        marker: "X"
+                                    }
+                                };
+                var gameConfirmationP2 = {
+                                    data: {
+                                        message: "StartGame",
+                                        responseCode: "200",
+                                        gameInstanceID: '' + data[i]._id,
+                                        marker: "O"
+                                    }
+                                };
+                notifications.confirmGameRequestNotification(request, response, playersIDs, gameConfirmationP1, gameConfirmationP2);
                 console.log("playerIds at confirmation: ", playersIDs)
                 response.send("200");
             } else if(!data[i].player1 && !data[i].player2){
@@ -146,7 +157,7 @@ function deleteGameInstance(request, response, instanceID){
         console.log("deleting instance with id", parseInt(instanceID))
         collection.findOne({_id: parseInt(instanceID)}, function(err, result){
             if(err) return err;
-            if(result.player1 || result.player2 ){
+            if(result){
             var playersIDs = [result.player1, result.player2]
             notifications.sendGameEndedNotification(request, response, playersIDs, gameEndedMessage);
             } else return err;

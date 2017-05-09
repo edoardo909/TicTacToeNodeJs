@@ -33,7 +33,7 @@ public class SendGameDataTask extends AsyncTask<String,Void,String> {
             httpURLConnection.setDoOutput(true);
 
             DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-            wr.writeBytes("PostData=" + params[1]);
+            wr.writeBytes("GameData=" + params[1]);
             wr.flush();
             wr.close();
             Log.d(TAG,"sending gamedata");

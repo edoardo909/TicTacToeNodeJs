@@ -34,8 +34,8 @@ public class SinglePlayer extends MyAppActivity {
 
     private void setBoard() {
         cpu = new Cpu();
-        spButtons = new Button[4][4];
-        spMark = new int[4][4];
+        spButtons = new Button[3][3];
+        spMark = new int[3][3];
         spButtons[0][2] = (Button) findViewById(R.id.b1);
         spButtons[0][1] = (Button) findViewById(R.id.b2);
         spButtons[0][0] = (Button) findViewById(R.id.b3);

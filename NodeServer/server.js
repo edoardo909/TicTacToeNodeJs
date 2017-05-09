@@ -32,17 +32,17 @@ mongoClient.connect(dbUrl, function(error, db){
 	 response.send("HomePage.<br />Still haven't decided what to do with it. <br />-try going to '/token' for now")
  });
  
- server.post("/async", function(request, response){
+ server.post("/async/game", function(request, response){
 	console.log("intercepting asyncTask");
 	response.send("Node Server intercepting asyncTask");
-//	console.log("Request Body (post): " , request.body);
+	console.log("Request Body (post): " , request.body);
  });
  
- server.get("/async", function(request, response){
+ server.get("/async/game", function(request, response){
 	console.log("getting async");
 	response.send("Getting asyncTask");
 	console.log("Request Body: " , request.body);
-	
+	//TODO sendGameDataToOtherPlayer
 });
 
 server.get("/async/gamerequest", function(request, response){
