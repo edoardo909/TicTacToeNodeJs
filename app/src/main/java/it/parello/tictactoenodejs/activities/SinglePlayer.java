@@ -36,15 +36,15 @@ public class SinglePlayer extends MyAppActivity {
         cpu = new Cpu();
         spButtons = new Button[3][3];
         spMark = new int[3][3];
-        spButtons[0][2] = (Button) findViewById(R.id.b1);
+        spButtons[0][0] = (Button) findViewById(R.id.b1);
         spButtons[0][1] = (Button) findViewById(R.id.b2);
-        spButtons[0][0] = (Button) findViewById(R.id.b3);
-        spButtons[1][2] = (Button) findViewById(R.id.b4);
+        spButtons[0][2] = (Button) findViewById(R.id.b3);
+        spButtons[1][0] = (Button) findViewById(R.id.b4);
         spButtons[1][1] = (Button) findViewById(R.id.b5);
-        spButtons[1][0] = (Button) findViewById(R.id.b6);
-        spButtons[2][2] = (Button) findViewById(R.id.b7);
+        spButtons[1][2] = (Button) findViewById(R.id.b6);
+        spButtons[2][0] = (Button) findViewById(R.id.b7);
         spButtons[2][1] = (Button) findViewById(R.id.b8);
-        spButtons[2][0] = (Button) findViewById(R.id.b9);
+        spButtons[2][2] = (Button) findViewById(R.id.b9);
 
         spTextView = (TextView) findViewById(R.id.dialogue);
 

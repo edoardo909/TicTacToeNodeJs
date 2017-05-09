@@ -37,6 +37,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
 
     Button restart;
     public static int mpMark[][];
+    int resultArray[] = new int[9];
     public static int i, j = 0;
     public static Button mpButtons[][];
     public static TextView mpTextView;
@@ -77,15 +78,15 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     private void setBoard() {
         mpButtons = new Button[3][3];
         mpMark = new int[3][3];
-        mpButtons[0][2] = (Button) findViewById(R.id.b1);
+        mpButtons[0][0] = (Button) findViewById(R.id.b1);
         mpButtons[0][1] = (Button) findViewById(R.id.b2);
-        mpButtons[0][0] = (Button) findViewById(R.id.b3);
-        mpButtons[1][2] = (Button) findViewById(R.id.b4);
+        mpButtons[0][2] = (Button) findViewById(R.id.b3);
+        mpButtons[1][0] = (Button) findViewById(R.id.b4);
         mpButtons[1][1] = (Button) findViewById(R.id.b5);
-        mpButtons[1][0] = (Button) findViewById(R.id.b6);
-        mpButtons[2][2] = (Button) findViewById(R.id.b7);
+        mpButtons[1][2] = (Button) findViewById(R.id.b6);
+        mpButtons[2][0] = (Button) findViewById(R.id.b7);
         mpButtons[2][1] = (Button) findViewById(R.id.b8);
-        mpButtons[2][0] = (Button) findViewById(R.id.b9);
+        mpButtons[2][2] = (Button) findViewById(R.id.b9);
 
         mpTextView = (TextView) findViewById(R.id.dialogue);
 
@@ -112,7 +113,10 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
                                 mpButtons[x][y].setText("X");
                                 mpMark[x][y] = 1;
                             }
-                            sendGameDataJson();
+                            //TODO convertire in array: (modulo(3 xke 3x3)* riga) + posizione es: mpButtons(0,2) -> (3*0)+2 = 2
+                            int resultArrayIndex = (3*x)+y;
+                            resultArray[resultArrayIndex] = mpMark[x][y];
+                            sendGameDataJson(resultArray);
                             mpTextView.setText("");
                         }
                 });
@@ -167,7 +171,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         //TODO put value into statistics
     }
 
-    private void sendGameDataJson(){
+    private void sendGameDataJson(int [] resultArray){
         JSONObject gameData = new JSONObject();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String myToken = sharedPreferences.getString("firebase-token","you fucked up somewhere");
@@ -175,7 +179,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         try {
             gameData.put("player_id", playerID);
             gameData.put("game_id", MyFirebaseMessagingService.instanceId);
-            gameData.put("board_data", Arrays.toString(tempBoardData) );
+            gameData.put("board_data", Arrays.toString(resultArray) );
             gameData.put("winner", false);
             Log.d(TAG,"Executing task: sending gamedata");
             new SendGameDataTask().execute(URL,gameData.toString());
