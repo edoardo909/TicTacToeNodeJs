@@ -52,7 +52,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     instanceId = Integer.parseInt(remoteMessage.getData().get("gameInstanceID"));
                     Log.e(TAG, "confirmGameRequest was received, starting the game with id: " + instanceId);
                     intent = new Intent(getApplicationContext(), MultiPlayer.class);
-                    intent.putExtra("playerMarker", remoteMessage.getData().get("marker"));
+                    String marker = remoteMessage.getData().get("marker");
+                    intent.putExtra("playerMarker", marker);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
             }else if(remoteMessage.getData().containsValue("ERROR") && remoteMessage.getData().containsValue("500")){
@@ -63,6 +64,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     Log.e(TAG, "game was ended by other player, you Win! =)");
                     intent = new Intent(INTENT_FILTER_GAME_END);
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+            } else if (remoteMessage.getData().containsKey("opponent_id")) {
+                //TODO get opponent game Data and apply to game Board
+                Log.e(TAG, "getting opponent game data" + remoteMessage.getData().get("board_data"));
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {

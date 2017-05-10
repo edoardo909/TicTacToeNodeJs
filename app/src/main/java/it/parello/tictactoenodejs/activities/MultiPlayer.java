@@ -37,7 +37,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
 
     Button restart;
     public static int mpMark[][];
-    int resultArray[] = new int[9];
+    int resultArray[] = {3, 3, 3, 3, 3, 3, 3, 3, 3};
     public static int i, j = 0;
     public static Button mpButtons[][];
     public static TextView mpTextView;
@@ -47,7 +47,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     private static final String forfeitURL = "http://192.168.1.220:8888/async/forfeit";
     private static final String URL = "http://192.168.1.220:8888/async/game";
     SharedPreferences sharedPreferences;
-    String [] tempBoardData = {"O","O","X"," ","X"," "," "," "," ",};
+    String playerMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +56,12 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         setBoard();
         restart = (Button) findViewById(R.id.restart);
         restart.setOnClickListener(l->{
-            setBoard();
+            resetBoard();
         });
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         IntentFilter intentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_GAME_END);
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
-        Log.e(TAG,"player Marker: " + String.valueOf(getIntent().getStringExtra("playerMarker")));
+        Log.e(TAG,"player Marker: " + playerMarker.toString());
     }
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -87,47 +87,63 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         mpButtons[2][0] = (Button) findViewById(R.id.b7);
         mpButtons[2][1] = (Button) findViewById(R.id.b8);
         mpButtons[2][2] = (Button) findViewById(R.id.b9);
-
         mpTextView = (TextView) findViewById(R.id.dialogue);
-
-        for (i = 0; i <= 2; i++) {
-            for (j = 0; j <= 2; j++)
-                mpMark[i][j] = 2;
-
+        mpTextView.setText("Click a button to start.");
+        playerMarker = String.valueOf(getIntent().getStringExtra("playerMarker"));
+        if (playerMarker.equals("X")){
+            mpTextView.setText("You are player X: wait for O");
+            for (i = 0; i < 3; i++) {
+                for (j = 0; j < 3; j++){
+                    mpButtons[i][j].setEnabled(false);
+                }
+            }
+        }else if(playerMarker.equals("O")){
+            mpTextView.setText("You are player O: play!");
         }
 
-        mpTextView.setText("Click a button to start.");
-        String playerMarker = String.valueOf(getIntent().getStringExtra("playerMarker"));
-        for (i = 0; i <= 2; i++) {
-            for (j = 0; j <= 2; j++) {
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++)
+                mpMark[i][j] = 2;
+        }
+
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
                 int x = i;
                 int y = j;
                 mpButtons[i][j].setOnClickListener(l-> {
                         Log.d(TAG,"button "+ mpButtons[x][y] + " clicked");
+                        int resultArrayIndex = (3*x)+y;
                         if (mpButtons[x][y].isEnabled()) {
                             mpButtons[x][y].setEnabled(false);
                             if(playerMarker.equals("O")) {
                                 mpButtons[x][y].setText("O");
                                 mpMark[x][y] = 0;
+                                resultArray[resultArrayIndex] = mpMark[x][y];
                             }else if(playerMarker.equals("X")){
+                                //todo get game data from player "O"
                                 mpButtons[x][y].setText("X");
                                 mpMark[x][y] = 1;
+                                resultArray[resultArrayIndex] = mpMark[x][y];
                             }
-                            //TODO convertire in array: (modulo(3 xke 3x3)* riga) + posizione es: mpButtons(0,2) -> (3*0)+2 = 2
-                            int resultArrayIndex = (3*x)+y;
-                            resultArray[resultArrayIndex] = mpMark[x][y];
+                            //x convertire in array: (modulo(3 xke 3x3)* riga) + posizione es: mpButtons(0,2) -> (3*0)+2 = 2
                             sendGameDataJson(resultArray);
                             mpTextView.setText("");
                         }
                 });
-                if (!mpButtons[i][j].isEnabled()) {
-                    mpButtons[i][j].setText(" ");
-                    mpButtons[i][j].setEnabled(true);
-                }
+
             }
         }
     }
 
+
+    private void resetBoard(){
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+                mpButtons[i][j].setText(" ");
+                mpButtons[i][j].setEnabled(true);
+            }
+        }
+    }
     @Override
     public void onBackPressed(){
         finishGame();
@@ -142,7 +158,6 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             alertBuilder.setCancelable(false);
             alertBuilder.setPositiveButton(R.string.yes, (d, j)-> {
                     forfeitGameTask.execute(forfeitURL, String.valueOf(MyFirebaseMessagingService.instanceId));
-
                     finish();
             }).setNegativeButton(R.string.no, (d, j)->{
                     d.cancel();
@@ -174,8 +189,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     private void sendGameDataJson(int [] resultArray){
         JSONObject gameData = new JSONObject();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String myToken = sharedPreferences.getString("firebase-token","you fucked up somewhere");
-        String playerID = myToken.substring(0,12);
+        String playerID = sharedPreferences.getString("firebase-token","you fucked up somewhere");
         try {
             gameData.put("player_id", playerID);
             gameData.put("game_id", MyFirebaseMessagingService.instanceId);

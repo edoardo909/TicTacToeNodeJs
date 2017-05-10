@@ -113,8 +113,8 @@ public class Cpu extends MainMenu{
             spTextView.setText("Game over. You win!");
             gameOver = true;
             winCounter++;
-            for (i = 0; i <= 2; i++) {
-                for (j = 0; j <= 2; j++)
+            for (i = 0; i < 3; i++) {
+                for (j = 0; j < 3; j++)
                     spButtons[i][j].setEnabled(false);
             }
         } else if ((spMark[0][0] == 1 && spMark[1][1] == 1 && spMark[2][2] == 1)
@@ -128,8 +128,8 @@ public class Cpu extends MainMenu{
             spTextView.setText("Game over. You lost!");
             gameOver = true;
             loseCounter++;
-            for (i = 0; i <= 2; i++) {
-                for (j = 0; j <= 2; j++)
+            for (i = 0; i < 3; i++) {
+                for (j = 0; j < 3; j++)
                     spButtons[i][j].setEnabled(false);
             }
         } else {

@@ -4,6 +4,7 @@ exports.sendTestNotification = sendTestNotification;
 exports.confirmGameRequestNotification = confirmGameRequestNotification;
 exports.sendErrorNotification = sendErrorNotification;
 exports.sendGameEndedNotification = sendGameEndedNotification;
+exports.sendGameDataToOtherPlayer = sendGameDataToOtherPlayer;
 
 var payload = {
   notification: {
@@ -53,4 +54,12 @@ function sendGameEndedNotification(request, response, playersIDs, gameEndedMessa
     }).catch(function(error){
         console.log("Error sending message: ", error);
     });
+}
+
+function sendGameDataToOtherPlayer(request, response, playersIDs, gameData){
+        admin.messaging().sendToDevice(playersIDs, gameData, options).then(function(response){
+            console.log("Successfully sent message: ",response);
+        }).catch(function(error){
+            console.log("Error sending message: ", error);
+        });
 }

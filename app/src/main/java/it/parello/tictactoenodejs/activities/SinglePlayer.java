@@ -18,7 +18,6 @@ public class SinglePlayer extends MyAppActivity {
     public static Button spButtons[][];
     public static Cpu cpu;
     public static TextView spTextView;
-    public boolean isInFront;
 
 
     @Override
@@ -34,8 +33,8 @@ public class SinglePlayer extends MyAppActivity {
 
     private void setBoard() {
         cpu = new Cpu();
-        spButtons = new Button[3][3];
-        spMark = new int[3][3];
+        spButtons = new Button[4][4];
+        spMark = new int[4][4];
         spButtons[0][0] = (Button) findViewById(R.id.b1);
         spButtons[0][1] = (Button) findViewById(R.id.b2);
         spButtons[0][2] = (Button) findViewById(R.id.b3);
@@ -48,15 +47,15 @@ public class SinglePlayer extends MyAppActivity {
 
         spTextView = (TextView) findViewById(R.id.dialogue);
 
-        for (i = 0; i <= 2; i++) {
-            for (j = 0; j <= 2; j++)
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++)
                 spMark[i][j] = 2;
 
         }
 
         spTextView.setText("Click a button to start.");
-        for (i = 0; i <= 2; i++) {
-            for (j = 0; j <= 2; j++) {
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
                 spButtons[i][j].setOnClickListener(new SPClickListener(i, j));
                 if (!spButtons[i][j].isEnabled()) {
                     spButtons[i][j].setText(" ");
@@ -66,17 +65,7 @@ public class SinglePlayer extends MyAppActivity {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        isInFront = true;
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        isInFront = false;
-    }
 }
 
 

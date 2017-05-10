@@ -6,6 +6,7 @@ var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
 
 exports.getPlayersIDs = getPlayersIDs;
 exports.deleteGameInstance = deleteGameInstance;
+exports.passGameDataToPlayers = passGameDataToPlayers;
 
 function getPlayersIDs(request, response){
 	mongoClient.connect(dbUrl, function(error, db){
@@ -164,6 +165,36 @@ function deleteGameInstance(request, response, instanceID){
         })
         collection.deleteOne({_id: parseInt(instanceID)},function(err, result){
             if (err) throw err;
+        })
+    })
+}
+
+function passGameDataToPlayers(request, response, gameData){
+    mongoClient.connect(dbUrl, function(error, db){
+        if(error) throw error;
+        var collection = db.collection("gameInstances");
+        var data = JSON.parse(gameData);
+        var player_id = data.player_id;
+        var game_id = data.game_id;
+        var board_data = data.board_data;
+        var winner = data.winner;
+        collection.findOne({_id: parseInt(game_id)}, function(err, result){
+            if(result){
+                if(player_id == result.player1){
+                    var opponentID = result.player2;
+                }else{
+                    var opponentID = result.player1;
+                }
+                var gameDataAfter = {
+                    data: {
+                        opponent_id: player_id,
+                        game_id: game_id.toString(),
+                        board_data: board_data,
+                        winner: winner.toString()
+                    }
+                }
+                notifications.sendGameDataToOtherPlayer(request, response, opponentID, gameDataAfter);
+            }
         })
     })
 }

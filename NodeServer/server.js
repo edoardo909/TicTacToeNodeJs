@@ -34,8 +34,16 @@ mongoClient.connect(dbUrl, function(error, db){
  
  server.post("/async/game", function(request, response){
 	console.log("intercepting asyncTask");
-	response.send("Node Server intercepting asyncTask");
+	response.send("Node Server intercepting asyncTask ");
 	console.log("Request Body (post): " , request.body);
+	var gameData = request.body.GameData;
+//	var data = JSON.parse(request.body.GameData);
+//	var player_id = data.player_id;
+//    var game_id = data.game_id;
+//    var board_data = data.board_data;
+//    var winner = data.winner;
+//    gameController.passGameDataToPlayers(request, response, player_id, game_id, board_data, winner);
+    gameController.passGameDataToPlayers(request, response, gameData);
  });
  
  server.get("/async/game", function(request, response){
