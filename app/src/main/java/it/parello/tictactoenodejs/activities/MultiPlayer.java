@@ -3,22 +3,17 @@ package it.parello.tictactoenodejs.activities;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +24,6 @@ import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.async.ForfeitGameTask;
 import it.parello.tictactoenodejs.async.SendGameDataTask;
 import it.parello.tictactoenodejs.firebase.MyFirebaseMessagingService;
-import it.parello.tictactoenodejs.listeners.MPClickListener;
 import it.parello.tictactoenodejs.service.AsyncResponse;
 import it.parello.tictactoenodejs.service.MyAppActivity;
 
@@ -59,12 +53,14 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             resetBoard();
         });
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
-        IntentFilter intentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_GAME_END);
-        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+        IntentFilter forfeitIntentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_GAME_END);
+        IntentFilter gameDataIntentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_DATA);
+        localBroadcastManager.registerReceiver(gameDataBroadcastReceiver, gameDataIntentFilter);
+        localBroadcastManager.registerReceiver(forfeitBroadcastReceiver, forfeitIntentFilter);
         Log.e(TAG,"player Marker: " + playerMarker.toString());
     }
 
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver forfeitBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG, "Game forfeit from other player, YOU WIN =)");
@@ -72,6 +68,31 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             final Handler handler = new Handler();
             handler.postDelayed(()-> {}, Toast.LENGTH_LONG +10);
             finish();
+        }
+    };
+
+    private final BroadcastReceiver gameDataBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String[] opponentGameData = intent.getStringExtra("board_data").replaceAll("[\\]\\[|\\] ]", "").split(",");
+            int [] odg = new int[9];
+            for(int i = 0; i < 9; i++) {
+                odg[i] = Integer.parseInt(opponentGameData[i]);
+            }
+            int count = 0;
+            for (i = 0; i < 3; i++) {
+                for (j = 0; j < 3; j++) {
+                    mpMark[i][j] = odg[count];
+                    count++;
+                    if (playerMarker.equals("X") && mpMark[i][j] == 0) {
+                        mpButtons[i][j].setText("O");
+                    } else if (playerMarker.equals("O") && mpMark[i][j] == 1) {
+                        mpButtons[i][j].setText("X");
+                    }
+                    mpButtons[i][j].setEnabled(true);
+                }
+            }
+            mpTextView.setText("It's your turn");
         }
     };
 
@@ -111,30 +132,32 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
                 int x = i;
                 int y = j;
                 mpButtons[i][j].setOnClickListener(l-> {
-                        Log.d(TAG,"button "+ mpButtons[x][y] + " clicked");
-                        int resultArrayIndex = (3*x)+y;
-                        if (mpButtons[x][y].isEnabled()) {
-                            mpButtons[x][y].setEnabled(false);
-                            if(playerMarker.equals("O")) {
-                                mpButtons[x][y].setText("O");
-                                mpMark[x][y] = 0;
-                                resultArray[resultArrayIndex] = mpMark[x][y];
-                            }else if(playerMarker.equals("X")){
-                                //todo get game data from player "O"
-                                mpButtons[x][y].setText("X");
-                                mpMark[x][y] = 1;
-                                resultArray[resultArrayIndex] = mpMark[x][y];
-                            }
-                            //x convertire in array: (modulo(3 xke 3x3)* riga) + posizione es: mpButtons(0,2) -> (3*0)+2 = 2
-                            sendGameDataJson(resultArray);
-                            mpTextView.setText("");
+                    Log.d(TAG,"button "+ mpButtons[x][y] + " clicked");
+                    //x convertire in array: (modulo(3 xke 3x3)* riga) + posizione es: mpButtons(0,2) -> (3*0)+2 = 2
+                    int resultArrayIndex = (3*x)+y;
+                    if (mpButtons[x][y].isEnabled()) {
+                        if(playerMarker.equals("O")) {
+                            mpButtons[x][y].setText("O");
+                            mpMark[x][y] = 0;
+                            resultArray[resultArrayIndex] = mpMark[x][y];
+                        }else if(playerMarker.equals("X")){
+                            mpButtons[x][y].setText("X");
+                            mpMark[x][y] = 1;
+                            resultArray[resultArrayIndex] = mpMark[x][y];
                         }
+                        sendGameDataJson(resultArray);
+                        mpTextView.setText("opponent turn");
+                        for (int a = 0; a < 3; a++) {
+                            for (int b = 0; b < 3; b++) {
+                                mpButtons[a][b].setEnabled(false);
+                            }
+                        }
+                    }
                 });
 
             }
         }
     }
-
 
     private void resetBoard(){
         for (i = 0; i < 3; i++) {
@@ -206,6 +229,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        localBroadcastManager.unregisterReceiver(forfeitBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(gameDataBroadcastReceiver);
     }
 }

@@ -33,6 +33,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     Intent intent;
     public static final String INTENT_FILTER_ERROR = "it.parello.tictactoenodejs.ERROR";
     public static final String INTENT_FILTER_GAME_END = "it.parello.tictactoenodejs.GAME_END";
+    public static final String INTENT_FILTER_DATA = "it.parello.tictactoenodejs.DATA";
     public static int instanceId;
 
     @Override
@@ -65,8 +66,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     intent = new Intent(INTENT_FILTER_GAME_END);
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             } else if (remoteMessage.getData().containsKey("opponent_id")) {
-                //TODO get opponent game Data and apply to game Board
-                Log.e(TAG, "getting opponent game data" + remoteMessage.getData().get("board_data"));
+                Log.e(TAG, "getting opponent game data");
+                String opponentGameData = remoteMessage.getData().get("board_data");
+                intent = new Intent(INTENT_FILTER_DATA);
+                intent.putExtra("board_data", opponentGameData);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {
