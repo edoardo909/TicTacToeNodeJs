@@ -27,4 +27,9 @@
     <string name="mp_match_win_count">Multiplayer Wins: Loses: Draws:</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="losses">Losses:</string>
+    <string name="wins">Wins:</string>
+    <string name="draws">Draws:</string>
+    <string name="single_player_wins">Single player:</string>
+    <string name="multiplayer_wins">Multiplayer:</string>
 </resources>
