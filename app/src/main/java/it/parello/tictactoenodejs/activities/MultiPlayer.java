@@ -22,12 +22,14 @@ import java.util.Arrays;
 
 import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.async.ForfeitGameTask;
+import it.parello.tictactoenodejs.async.RematchRequestTask;
 import it.parello.tictactoenodejs.async.SendGameDataTask;
 import it.parello.tictactoenodejs.firebase.MyFirebaseMessagingService;
 import it.parello.tictactoenodejs.service.AsyncResponse;
 import it.parello.tictactoenodejs.service.MyAppActivity;
 
 public class MultiPlayer extends MyAppActivity implements AsyncResponse {
+
 
     Button restart;
     public static int mpMark[][];
@@ -38,11 +40,13 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     AlertDialog alertDialog;
     LocalBroadcastManager localBroadcastManager;
     private static final String TAG = "MultiPlayerActivity";
-    private static final String forfeitURL = "http://192.168.1.220:8888/async/forfeit";
-    private static final String URL = "http://192.168.1.220:8888/async/game";
+    private static final String FORFEIT_URL = "http://192.168.1.220:8888/async/forfeit";
+    private static final String GAME_URL = "http://192.168.1.220:8888/async/game";
+    private static final String REMATCH_URL = "http://192.168.1.220:8888/async/rematch";
     SharedPreferences sharedPreferences;
     String playerMarker;
     static int mpWinCounter, mpLoseCounter, mpDrawCounter;
+    boolean isGameOver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,11 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         setBoard();
         playGame();
         restart = (Button) findViewById(R.id.restart);
+        if(!isGameOver){
+            restart.setEnabled(false);
+        }else{
+            restart.setEnabled(true);
+        }
         restart.setOnClickListener(l->{
             resetBoard();
         });
@@ -193,10 +202,11 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     private void resetBoard(){
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {
-                mpButtons[i][j].setText(" ");
+                mpButtons[i][j].setText("Requesting Rematch...");
                 mpButtons[i][j].setEnabled(true);
                 resultArray = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3};
-                //TODO send game repeat request
+                RematchRequestTask rematchRequestTask = new RematchRequestTask();
+                rematchRequestTask.execute(REMATCH_URL, String.valueOf(MyFirebaseMessagingService.instanceId));
             }
         }
     }
@@ -216,7 +226,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             alertBuilder.setMessage("you will forfeit");
             alertBuilder.setCancelable(false);
             alertBuilder.setPositiveButton(R.string.yes, (d, j)-> {
-                    forfeitGameTask.execute(forfeitURL, String.valueOf(MyFirebaseMessagingService.instanceId));
+                    forfeitGameTask.execute(FORFEIT_URL, String.valueOf(MyFirebaseMessagingService.instanceId));
                     finish();
             }).setNegativeButton(R.string.no, (d, j)->{
                     d.cancel();
@@ -249,7 +259,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             gameData.put("game_id", MyFirebaseMessagingService.instanceId);
             gameData.put("board_data", Arrays.toString(resultArray) );
             Log.d(TAG,"Executing task: sending gamedata");
-            new SendGameDataTask().execute(URL,gameData.toString());
+            new SendGameDataTask().execute(GAME_URL,gameData.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

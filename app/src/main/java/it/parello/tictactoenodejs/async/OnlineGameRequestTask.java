@@ -18,12 +18,12 @@ import it.parello.tictactoenodejs.service.AsyncResponse;
  * Created by edoar on 23/04/2017.
  */
 
-public class SendOnlineGameRequest extends AsyncTask<String, Integer, String> {
+public class OnlineGameRequestTask extends AsyncTask<String, Integer, String> {
 
-    private static final String TAG = "SendOnlineGameRequest";
+    private static final String TAG = "OnlineGameRequestTask";
     public AsyncResponse responseListener;
 
-    public SendOnlineGameRequest(AsyncResponse listener){
+    public OnlineGameRequestTask(AsyncResponse listener){
         this.responseListener = listener;
     }
 

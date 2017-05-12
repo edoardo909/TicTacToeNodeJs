@@ -7,6 +7,7 @@ var dbUrl = 'mongodb://localhost:27017/AndroidTokens';
 exports.getPlayersIDs = getPlayersIDs;
 exports.deleteGameInstance = deleteGameInstance;
 exports.passGameDataToPlayers = passGameDataToPlayers;
+exports.rematch = rematch;
 
 function getPlayersIDs(request, response){
 	mongoClient.connect(dbUrl, function(error, db){
@@ -31,7 +32,6 @@ function getPlayersIDs(request, response){
                 }
                 console.log("playersIDs", playersIDs);
                 isAnyPlayerWaitingForGame(request, response, playersIDs);
-
             }
 		});
     });
@@ -40,7 +40,7 @@ function getPlayersIDs(request, response){
 
 
 function isAnyPlayerWaitingForGame(request, response, playersIDs){
-    /*   controllo se esiste gia una gameInstance e se è gia piena di giocatori(.length>2)
+    /*   controllo se esiste gia una gameInstance e se è gia piena di giocatori
        poi se esiste e non è piena, inserisci giocatore; se esiste ed è piena creane un'altra; se non esiste, crea gameInstance
 
        Nella collection 'gameInstances' il primo record deve esistere prima di fare la prima chiamata:
@@ -52,7 +52,6 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
         var nGameInstances = collection.count({}, function(error, count){
             nGameInstances = count;
         });
-
         collection.find().toArray(function(error, data){
             var i = data.length-1;
             console.log("nGameInstances", nGameInstances)
@@ -68,8 +67,8 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
             if((nGameInstances == 1 || (data[i].player1 && data[i].player2)) ){
                 createNewGameInstance(request, response, playersIDs);
             }else if(data[i].player1 && !data[i].player2){
-                console.log("PLAYERsIDS prima", playersIDs)
-                console.log("playerIDS before: ", data[i].player1 + " " + data[i].player2)
+//                console.log("PLAYERsIDS prima", playersIDs)
+//                console.log("playerIDS before: ", data[i].player1 + " " + data[i].player2)
                 playersIDs.push(data[i].player1);
                 updateGameInstance(request, response, playersIDs);
                 var gameConfirmationP1 = {
@@ -89,7 +88,7 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
                                     }
                                 };
                 notifications.confirmGameRequestNotification(request, response, playersIDs, gameConfirmationP1, gameConfirmationP2);
-                console.log("playerIds at confirmation: ", playersIDs)
+//                console.log("playerIds at confirmation: ", playersIDs)
 //                response.send("200");
             } else if(!data[i].player1 && !data[i].player2){
                 createNewGameInstance(request, response, playersIDs);
@@ -98,7 +97,7 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
             if(data[i].player1 == data[i].player2 || playersIDs[0] == playersIDs[1]){
                 deleteGameInstance(request, response, parseInt(data[i]));
                 notifications.sendErrorNotification(request, response, playersIDs, gameErrorMessage);
-                console.log("same fucking IDs in gameInstance!! =(")
+                console.log("same IDs in gameInstance!! =(")
                 return;
             }
 
@@ -135,7 +134,7 @@ function createNewGameInstance(request, response, playersIDs){
             console.log("Creating New gameInstance");
             collection.insert({_id: index ,player1: playersIDs[0],function (error, result){
                 if(error) throw error;
-                console.log("insert outcome: ",result)
+//                console.log("insert outcome: ",result)
                 }
             })
         })
@@ -205,7 +204,7 @@ function passGameDataToPlayers(request, response, gameData){
 
 function isGameOver(request, response, playersIDs, boardData){
     var bd = boardData.replace(/[[\],]/g,'').split(/[ ,]+/);
-    console.log("NEWBOARDDATA: ",bd);
+//    console.log("NEWBOARDDATA: ",bd);
     var gameOverMessage = null;
     if( (bd[0]== 0 && bd[4]== 0 && bd[8]== 0) || (bd[2]== 0 && bd[4]== 0 && bd[6]== 0) ||
         (bd[0]== 0 && bd[3]== 0 && bd[6]== 0) || (bd[1]== 0 && bd[4]== 0 && bd[7]== 0) ||
@@ -237,13 +236,23 @@ function isGameOver(request, response, playersIDs, boardData){
           }
 }
 
-
-//        var newBoardData = board_data.replace(/[[\],]/g,'').split(/[ ,]+/);
-//        tempBoardData.push(newBoardData);
-//        for(int i = 0; i < board_data.length-1; i++){
-//            for(int j = 0; j < board_data.length-1; i++){
-//                if(tempBoardData[i][j]==tempBoardData[i++][j++] || tempBoardData[i]== 1 && tempBoardData[i++]== 0 ){
-//                    break;
-//                }else if((tempBoardData[i]== 1 && tempBoardData[i++]== 3) || (tempBoardData[i]==0 && tempBoardData[i++]))
-//            }
-//        }
+function rematch(request, response){
+    mongoClient.connect(dbUrl, function(error, db){
+    		var collection = db.collection('gameInstances');
+    		if(error) throw error;
+    		var requestingPlayerGameID = request.body.RematchRequest;
+    		 collection.findOne({_id: parseInt(requestingPlayerGameID)}, function(err, result){
+                if(err){
+                    response.send("no_rematch");
+                }else{
+                    var playersIDs = [result.player1,result.player2];
+                    var rematchMessage = {
+                        data: {
+                            rematch: "ok"
+                        }
+                    }
+                    notifications.sendRematchNotification(request, response, playersIDs, rematchMessage);
+                }
+        });
+    });
+}

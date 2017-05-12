@@ -72,6 +72,16 @@ server.post("/async/forfeit", function(request, response){
     response.send("gameCancelled");
 });
 
+server.post("/async/rematch", function(request, response){
+    gameController.rematch(request, response);
+    if(!response)
+    response.send("intercepting rematch request")
+});
+
+server.get("/async/rematch", function(request, response){
+    response.send("get rematch request")
+});
+
 server.get("/token", function(request, response){
 	tokenController.readTokenFromDatabase(request, response);
 	console.log("Request Body: " , request.body);

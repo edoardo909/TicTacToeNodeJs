@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import it.parello.tictactoenodejs.R;
-import it.parello.tictactoenodejs.async.SendOnlineGameRequest;
+import it.parello.tictactoenodejs.async.OnlineGameRequestTask;
 import it.parello.tictactoenodejs.firebase.MyFirebaseMessagingService;
 import it.parello.tictactoenodejs.fragments.MenuFragment;
 import it.parello.tictactoenodejs.fragments.Statistics;
@@ -87,7 +87,7 @@ public class MainMenu extends MyAppActivity implements
         String myToken = prefs.getString("firebase-token","you fucked up somewhere");
         Log.e(TAG, myToken);
         progressBar.setVisibility(VISIBLE);
-        SendOnlineGameRequest sgr = new SendOnlineGameRequest(this);
+        OnlineGameRequestTask sgr = new OnlineGameRequestTask(this);
         Log.d(TAG,"Sending Online Game Request Async Task");
         sgr.execute(URL, myToken);
     }

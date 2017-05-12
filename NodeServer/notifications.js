@@ -6,6 +6,7 @@ exports.sendErrorNotification = sendErrorNotification;
 exports.sendGameEndedNotification = sendGameEndedNotification;
 exports.sendGameDataToOtherPlayer = sendGameDataToOtherPlayer;
 exports.sendGameOverNotification = sendGameOverNotification;
+exports.sendRematchNotification = sendRematchNotification;
 
 var payload = {
   notification: {
@@ -67,6 +68,14 @@ function sendGameDataToOtherPlayer(request, response, playersIDs, gameData){
 
 function sendGameOverNotification(request, response, playersIDs, gameOverMessage){
     admin.messaging().sendToDevice(playersIDs, gameOverMessage, options).then(function(response){
+        console.log("Successfully sent message: ",response);
+    }).catch(function(error){
+        console.log("Error sending message: ", error);
+    });
+}
+
+function sendRematchNotification(request, response, playersIDs, rematchMessage){
+    admin.messaging().sendToDevice(playersIDs, rematchMessage, options).then(function(response){
         console.log("Successfully sent message: ",response);
     }).catch(function(error){
         console.log("Error sending message: ", error);
