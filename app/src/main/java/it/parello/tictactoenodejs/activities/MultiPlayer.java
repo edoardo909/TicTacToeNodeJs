@@ -42,6 +42,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     private static final String URL = "http://192.168.1.220:8888/async/game";
     SharedPreferences sharedPreferences;
     String playerMarker;
+    static int mpWinCounter, mpLoseCounter, mpDrawCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +105,21 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
     private final BroadcastReceiver winnerBroadCastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mpTextView.setText(intent.getStringExtra("winner") + " has won the game");
+            String winner = intent.getStringExtra("winner");
+            mpTextView.setText(winner + " has won the game");
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if(winner.equals("X") && playerMarker.equals("X")){
+                editor.putInt("mpWinCounter", mpWinCounter++);
+            }else if(winner.equals("O") && playerMarker.equals("O")){
+                editor.putInt("mpWinCounter", mpWinCounter++);
+            }else if(winner.equals("O") && playerMarker.equals("X")){
+                editor.putInt("mpLoseCounter", mpLoseCounter++);
+            }else if(winner.equals("X") && playerMarker.equals("O")){
+                editor.putInt("mpLoseCounter", mpLoseCounter++);
+            }else{
+                editor.putInt("mpDrawCounter", mpDrawCounter++);
+            }
+            editor.commit();
         }
     };
 

@@ -1,6 +1,7 @@
 package it.parello.tictactoenodejs.service;
 
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.util.Random;
 
@@ -21,17 +22,41 @@ public class Cpu extends MainMenu{
     public static int winCounter;
     public static int loseCounter;
     public static int drawCounter;
+    static SharedPreferences sharedPreferences;
 
-    public static int getWinCounter() {
+    public static int getSPWinCounter() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MyAppActivity.contextOfApplication);
+        winCounter = sharedPreferences.getInt("winCounter", winCounter);
         return winCounter;
     }
+    private void saveWinCounter(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("winCounter", winCounter);
+        editor.commit();
+    }
 
-    public static int getLoseCounter() {
+    public static int getSPLoseCounter() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MyAppActivity.contextOfApplication);
+        loseCounter = sharedPreferences.getInt("loseCounter", loseCounter);
         return loseCounter;
     }
 
-    public static int getDrawCounter() {
+    public static int getSPDrawCounter() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MyAppActivity.contextOfApplication);
+        drawCounter = sharedPreferences.getInt("loseCounter", drawCounter);
         return drawCounter;
+    }
+
+    private void saveLoseCounter(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("loseCounter", loseCounter);
+        editor.commit();
+    }
+
+    private void saveDrawCounter(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("drawCounter", drawCounter);
+        editor.commit();
     }
     public void takeTurn() {
 
@@ -113,6 +138,7 @@ public class Cpu extends MainMenu{
             spTextView.setText("Game over. You win!");
             gameOver = true;
             winCounter++;
+            saveWinCounter();
             for (i = 0; i < 3; i++) {
                 for (j = 0; j < 3; j++)
                     spButtons[i][j].setEnabled(false);
@@ -128,6 +154,7 @@ public class Cpu extends MainMenu{
             spTextView.setText("Game over. You lost!");
             gameOver = true;
             loseCounter++;
+            saveLoseCounter();
             for (i = 0; i < 3; i++) {
                 for (j = 0; j < 3; j++)
                     spButtons[i][j].setEnabled(false);
@@ -145,6 +172,7 @@ public class Cpu extends MainMenu{
             if(!empty) {
                 gameOver = true;
                 drawCounter++;
+                saveDrawCounter();
                 spTextView.setText("Game over. It's a draw!");
             }
         }

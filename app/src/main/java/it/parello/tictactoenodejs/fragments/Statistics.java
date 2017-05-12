@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,9 @@ import android.widget.TextView;
 
 import it.parello.tictactoenodejs.R;
 
-import static it.parello.tictactoenodejs.service.Cpu.getDrawCounter;
-import static it.parello.tictactoenodejs.service.Cpu.getLoseCounter;
-import static it.parello.tictactoenodejs.service.Cpu.getWinCounter;
+import static it.parello.tictactoenodejs.service.Cpu.getSPDrawCounter;
+import static it.parello.tictactoenodejs.service.Cpu.getSPLoseCounter;
+import static it.parello.tictactoenodejs.service.Cpu.getSPWinCounter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,17 +27,18 @@ import static it.parello.tictactoenodejs.service.Cpu.getWinCounter;
  */
 public class Statistics extends Fragment {
 
-    private TextView winCount;
-    private TextView loseCount;
-    private TextView drawCount;
+    private TextView spWinCount;
+    private TextView spLoseCount;
+    private TextView spDrawCount;
+    private TextView mpWinCount;
+    private TextView mpLoseCount;
+    private TextView mpDrawCount;
 
     SharedPreferences sp ;
 
     private OnFragmentInteractionListener mListener;
 
-    public Statistics() {
-        // Required empty public constructor
-    }
+    public Statistics() {}
 
 
     public static Statistics newInstance() {
@@ -50,23 +52,28 @@ public class Statistics extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = getActivity().getSharedPreferences("my_shared_prefs", 0);
-
+        sp = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_statistics_old, container, false);
-        winCount = (TextView) layout.findViewById(R.id.sp_win_counter);
-        loseCount = (TextView) layout.findViewById(R.id.sp_lose_counter);
-        drawCount = (TextView) layout.findViewById(R.id.sp_draw_counter);
-        int winCounter = getWinCounter();
-        int loseCounter = getLoseCounter();
-        int drawCounter = getDrawCounter();
-        winCount.setText(String.valueOf(winCounter));
-        loseCount.setText(String.valueOf(loseCounter));
-        drawCount.setText(String.valueOf(drawCounter));
+        View layout = inflater.inflate(R.layout.fragment_statistics, container, false);
+        spWinCount = (TextView) layout.findViewById(R.id.sp_win_counter);
+        spLoseCount = (TextView) layout.findViewById(R.id.sp_lose_counter);
+        spDrawCount = (TextView) layout.findViewById(R.id.sp_draw_counter);
+        mpWinCount = (TextView) layout.findViewById(R.id.mp_win_counter);
+        mpLoseCount = (TextView) layout.findViewById(R.id.mp_lose_counter);
+        mpDrawCount = (TextView) layout.findViewById(R.id.mp_draw_counter);
+        int spWinCounter = getSPWinCounter();
+        int spLoseCounter = getSPLoseCounter();
+        int spDrawCounter = getSPDrawCounter();
+        spWinCount.setText(String.valueOf(spWinCounter));
+        spLoseCount.setText(String.valueOf(spLoseCounter));
+        spDrawCount.setText(String.valueOf(spDrawCounter));
+        mpWinCount.setText(String.valueOf(sp.getInt("mpWinCounter", 0)));
+        mpLoseCount.setText(String.valueOf(sp.getInt("mpLoseCounter", 0)));
+        mpDrawCount.setText(String.valueOf(sp.getInt("mpDrawCounter", 0)));
         return layout;
     }
 
