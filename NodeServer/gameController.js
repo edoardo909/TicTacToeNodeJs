@@ -18,7 +18,7 @@ function getPlayersIDs(request, response){
 		collection.find({token: { $exists: true, $eq: requestingPlayerID}},{"_id":0}).toArray(function(err, dataArray){
 		    var playersIDs = new Array;
 		    if (dataArray.length == 0 || err){
-		     response.send("500");
+//		     response.send("500");
 		     console.log("player does not exist")
 		     return err;
 		    }else {
@@ -90,10 +90,10 @@ function isAnyPlayerWaitingForGame(request, response, playersIDs){
                                 };
                 notifications.confirmGameRequestNotification(request, response, playersIDs, gameConfirmationP1, gameConfirmationP2);
                 console.log("playerIds at confirmation: ", playersIDs)
-                response.send("200");
+//                response.send("200");
             } else if(!data[i].player1 && !data[i].player2){
                 createNewGameInstance(request, response, playersIDs);
-                response.send("503");
+//                response.send("503");
             }
             if(data[i].player1 == data[i].player2 || playersIDs[0] == playersIDs[1]){
                 deleteGameInstance(request, response, parseInt(data[i]));
@@ -166,7 +166,7 @@ function deleteGameInstance(request, response, instanceID){
         collection.deleteOne({_id: parseInt(instanceID)},function(err, result){
             if (err) throw err;
         })
-    })
+    });
 }
 
 function passGameDataToPlayers(request, response, gameData){
@@ -177,9 +177,10 @@ function passGameDataToPlayers(request, response, gameData){
         var player_id = data.player_id;
         var game_id = data.game_id;
         var board_data = data.board_data;
-        var winner = data.winner;
+        console.log("board data: ", board_data);
         collection.findOne({_id: parseInt(game_id)}, function(err, result){
             if(result){
+                var playersIDs = [result.player1,result.player2];
                 if(player_id == result.player1){
                     var opponentID = result.player2;
                 }else{
@@ -190,11 +191,59 @@ function passGameDataToPlayers(request, response, gameData){
                         opponent_id: player_id,
                         game_id: game_id.toString(),
                         board_data: board_data,
-                        winner: winner.toString()
                     }
                 }
-                notifications.sendGameDataToOtherPlayer(request, response, opponentID, gameDataAfter);
+                if(!isGameOver(request,response, playersIDs, board_data)){
+                    notifications.sendGameDataToOtherPlayer(request, response, opponentID, gameDataAfter);
+                }else{
+                    console.log("GAME OVER")
+                }
             }
         })
-    })
+    });
 }
+
+function isGameOver(request, response, playersIDs, boardData){
+    var bd = boardData.replace(/[[\],]/g,'').split(/[ ,]+/);
+    console.log("NEWBOARDDATA: ",bd);
+    var gameOverMessage = null;
+    if( (bd[0]== 0 && bd[4]== 0 && bd[8]== 0) || (bd[2]== 0 && bd[4]== 0 && bd[6]== 0) ||
+        (bd[0]== 0 && bd[3]== 0 && bd[6]== 0) || (bd[1]== 0 && bd[4]== 0 && bd[7]== 0) ||
+        (bd[2]== 0 && bd[5]== 0 && bd[8]== 0) || (bd[0]== 0 && bd[1]== 0 && bd[2]== 0) ||
+        (bd[3]== 0 && bd[4]== 0 && bd[5]== 0) || (bd[6]== 0 && bd[7]== 0 && bd[8]== 0)){
+        console.log("player O wins");
+        gameOverMessage = {
+            data: {
+                winner: "O"
+            }
+        }
+        notifications.sendGameOverNotification(request, response, playersIDs, gameOverMessage);
+        return true;
+    }else
+     if( (bd[0]== 1 && bd[4]== 1 && bd[8]== 1) || (bd[2]== 1 && bd[4]== 1 && bd[6]== 1) ||
+         (bd[0]== 1 && bd[3]== 1 && bd[6]== 1) || (bd[1]== 1 && bd[4]== 1 && bd[7]== 1) ||
+         (bd[2]== 1 && bd[5]== 1 && bd[8]== 1) || (bd[0]== 1 && bd[1]== 1 && bd[2]== 1) ||
+         (bd[3]== 1 && bd[4]== 1 && bd[5]== 1) || (bd[6]== 1 && bd[7]== 1 && bd[8]== 1)){
+          gameOverMessage = {
+              data: {
+                  winner: "X"
+              }
+          }
+          notifications.sendGameOverNotification(request, response, playersIDs, gameOverMessage);
+          console.log("player X wins");
+          return true
+          }else{
+            return false;
+          }
+}
+
+
+//        var newBoardData = board_data.replace(/[[\],]/g,'').split(/[ ,]+/);
+//        tempBoardData.push(newBoardData);
+//        for(int i = 0; i < board_data.length-1; i++){
+//            for(int j = 0; j < board_data.length-1; i++){
+//                if(tempBoardData[i][j]==tempBoardData[i++][j++] || tempBoardData[i]== 1 && tempBoardData[i++]== 0 ){
+//                    break;
+//                }else if((tempBoardData[i]== 1 && tempBoardData[i++]== 3) || (tempBoardData[i]==0 && tempBoardData[i++]))
+//            }
+//        }

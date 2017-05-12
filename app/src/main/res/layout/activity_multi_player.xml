@@ -188,7 +188,7 @@
         android:id="@+id/restart"
         android:layout_width="0dp"
         android:layout_height="90dp"
-        android:text="@string/restart"
+        android:text="@string/rematch"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintBottom_creator="1"
         android:layout_marginStart="8dp"

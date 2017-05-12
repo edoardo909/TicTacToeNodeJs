@@ -31,7 +31,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
 
     Button restart;
     public static int mpMark[][];
-    int resultArray[] = {3, 3, 3, 3, 3, 3, 3, 3, 3};
+    int resultArray[] = {3, 3, 3, 3, 3, 3, 3, 3, 3};;
     public static int i, j = 0;
     public static Button mpButtons[][];
     public static TextView mpTextView;
@@ -48,6 +48,7 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_player);
         setBoard();
+        playGame();
         restart = (Button) findViewById(R.id.restart);
         restart.setOnClickListener(l->{
             resetBoard();
@@ -55,7 +56,9 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         IntentFilter forfeitIntentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_GAME_END);
         IntentFilter gameDataIntentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_DATA);
+        IntentFilter winnerIntentFilter = new IntentFilter(MyFirebaseMessagingService.INTENT_FILTER_WINNER);
         localBroadcastManager.registerReceiver(gameDataBroadcastReceiver, gameDataIntentFilter);
+        localBroadcastManager.registerReceiver(winnerBroadCastReceiver, winnerIntentFilter);
         localBroadcastManager.registerReceiver(forfeitBroadcastReceiver, forfeitIntentFilter);
         Log.e(TAG,"player Marker: " + playerMarker.toString());
     }
@@ -90,9 +93,18 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
                         mpButtons[i][j].setText("X");
                     }
                     mpButtons[i][j].setEnabled(true);
+                    int resultArrayIndex = (3*i)+j;
+                    resultArray[resultArrayIndex] = mpMark[i][j];
                 }
             }
             mpTextView.setText("It's your turn");
+        }
+    };
+
+    private final BroadcastReceiver winnerBroadCastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mpTextView.setText(intent.getStringExtra("winner") + " has won the game");
         }
     };
 
@@ -127,6 +139,10 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
                 mpMark[i][j] = 2;
         }
 
+
+    }
+
+    private void playGame(){
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {
                 int x = i;
@@ -145,8 +161,8 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
                             mpMark[x][y] = 1;
                             resultArray[resultArrayIndex] = mpMark[x][y];
                         }
-                        sendGameDataJson(resultArray);
                         mpTextView.setText("opponent turn");
+                        sendGameDataJson(resultArray);
                         for (int a = 0; a < 3; a++) {
                             for (int b = 0; b < 3; b++) {
                                 mpButtons[a][b].setEnabled(false);
@@ -164,16 +180,21 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             for (j = 0; j < 3; j++) {
                 mpButtons[i][j].setText(" ");
                 mpButtons[i][j].setEnabled(true);
+                resultArray = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3};
+                //TODO send game repeat request
             }
         }
     }
     @Override
     public void onBackPressed(){
-        finishGame();
+        if(mpTextView.getText().toString().contains("has won the game")){
+            super.onBackPressed();
+        }else{
+            forfeitGame();
+        }
     }
 
-    private void finishGame(){
-        if(!isGameOver()){
+    private void forfeitGame(){
             ForfeitGameTask forfeitGameTask = new ForfeitGameTask(this);
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
             alertBuilder.setTitle("Quit Game?");
@@ -187,11 +208,6 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             });
             alertDialog = alertBuilder.create();
             alertDialog.show();
-        }
-    }
-
-    private boolean isGameOver(){
-        return false;
     }
 
     @Override
@@ -217,7 +233,6 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
             gameData.put("player_id", playerID);
             gameData.put("game_id", MyFirebaseMessagingService.instanceId);
             gameData.put("board_data", Arrays.toString(resultArray) );
-            gameData.put("winner", false);
             Log.d(TAG,"Executing task: sending gamedata");
             new SendGameDataTask().execute(URL,gameData.toString());
         } catch (JSONException e) {
@@ -231,5 +246,6 @@ public class MultiPlayer extends MyAppActivity implements AsyncResponse {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(forfeitBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(gameDataBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(winnerBroadCastReceiver);
     }
 }

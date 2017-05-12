@@ -34,6 +34,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final String INTENT_FILTER_ERROR = "it.parello.tictactoenodejs.ERROR";
     public static final String INTENT_FILTER_GAME_END = "it.parello.tictactoenodejs.GAME_END";
     public static final String INTENT_FILTER_DATA = "it.parello.tictactoenodejs.DATA";
+    public static final String INTENT_FILTER_WINNER = "it.parello.tictactoenodejs.WINNER";
     public static int instanceId;
 
     @Override
@@ -68,8 +69,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } else if (remoteMessage.getData().containsKey("opponent_id")) {
                 Log.e(TAG, "getting opponent game data");
                 String opponentGameData = remoteMessage.getData().get("board_data");
+                Log.e(TAG, "game data---> " + opponentGameData);
                 intent = new Intent(INTENT_FILTER_DATA);
                 intent.putExtra("board_data", opponentGameData);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+            }else if(remoteMessage.getData().containsKey("winner")){
+                String winner = remoteMessage.getData().get("winner");
+                intent = new Intent(INTENT_FILTER_WINNER);
+                intent.putExtra("winner", winner);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
             }
 
