@@ -57,7 +57,7 @@ public class Statistics extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_statistics, container, false);
+        View layout = inflater.inflate(R.layout.fragment_statistics_old, container, false);
         winCount = (TextView) layout.findViewById(R.id.sp_win_counter);
         loseCount = (TextView) layout.findViewById(R.id.sp_lose_counter);
         drawCount = (TextView) layout.findViewById(R.id.sp_draw_counter);
