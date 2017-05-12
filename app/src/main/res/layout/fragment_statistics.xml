@@ -9,9 +9,34 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/statistics_title1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="75dp"
+        android:text="@string/statistics_title"
+        android:textColor="@color/red"
+        android:textSize="50sp"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="75dp"
+        android:layout_marginEnd="75dp" />
+    <TextView
+        android:id="@+id/statistics_title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/statistics_title"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        app:layout_constraintTop_toBottomOf="@id/statistics_title1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="75dp"
+        android:layout_marginEnd="75dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="75dp"
         android:layout_marginTop="120dp"
         android:text="@string/single_player_wins"
         android:textColor="@color/black"
@@ -31,7 +56,7 @@
         android:textColor="@color/black"
         android:layout_marginTop="49dp"
         app:layout_constraintTop_toBottomOf="@+id/single_player_wins"
-        android:layout_marginLeft="75dp"
+        android:layout_marginStart="75dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
@@ -39,10 +64,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="0"
+        android:text="@string/_0"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/single_player_wins"
-        android:layout_marginLeft="200dp"
+        android:layout_marginStart="200dp"
         android:layout_marginTop="49dp" />
 
     <TextView
@@ -52,7 +77,7 @@
         android:text="@string/losses"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/single_wins"
-        android:layout_marginLeft="75dp"
+        android:layout_marginStart="75dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp" />
 
@@ -61,10 +86,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="0"
+        android:text="@string/_0"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sp_win_counter"
-        android:layout_marginLeft="200dp"
+        android:layout_marginStart="200dp"
         android:layout_marginTop="19dp"/>
 
     <TextView
@@ -74,7 +99,7 @@
         android:text="@string/draws"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/single_losses"
-        android:layout_marginLeft="75dp"
+        android:layout_marginStart="75dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp" />
 
@@ -82,18 +107,18 @@
         android:id="@+id/sp_draw_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="@string/_0"
         android:textColor="@color/black"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sp_lose_counter"
-        android:layout_marginLeft="200dp"
+        android:layout_marginStart="200dp"
         android:layout_marginTop="21dp"/>
 
     <TextView
         android:id="@+id/multi_player_wins"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="75dp"
+        android:layout_marginStart="75dp"
         android:layout_marginTop="60dp"
         android:text="@string/multiplayer_wins"
         android:textColor="@color/black"
@@ -108,7 +133,7 @@
         android:text="@string/wins"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/multi_player_wins"
-        android:layout_marginLeft="75dp"
+        android:layout_marginStart="75dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp"/>
 
@@ -116,11 +141,11 @@
         android:id="@+id/mp_win_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="@string/_0"
         android:textColor="@color/black"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/multi_player_wins"
-        android:layout_marginLeft="200dp"
+        android:layout_marginStart="200dp"
         android:layout_marginTop="20dp"/>
 
     <TextView
@@ -130,7 +155,7 @@
         android:text="@string/losses"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/multi_wins"
-        android:layout_marginLeft="75dp"
+        android:layout_marginStart="75dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp"/>
 
@@ -138,11 +163,11 @@
         android:id="@+id/mp_lose_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="@string/_0"
         android:textColor="@color/black"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mp_win_counter"
-        android:layout_marginLeft="200dp"
+        android:layout_marginStart="200dp"
         android:layout_marginTop="20dp"/>
 
     <TextView
@@ -152,7 +177,7 @@
         android:text="@string/draws"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/multi_losses"
-        android:layout_marginLeft="75dp"
+        android:layout_marginStart="75dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp"/>
 
@@ -160,11 +185,11 @@
         android:id="@+id/mp_draw_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="@string/_0"
         android:textColor="@color/black"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mp_lose_counter"
-        android:layout_marginLeft="200dp"
+        android:layout_marginStart="200dp"
         android:layout_marginTop="20dp"/>
 
 </android.support.constraint.ConstraintLayout>

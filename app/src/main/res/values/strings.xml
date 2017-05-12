@@ -32,4 +32,6 @@
     <string name="draws">Draws:</string>
     <string name="single_player_wins">Single player:</string>
     <string name="multiplayer_wins">Multiplayer:</string>
+    <string name="_0">0</string>
+    <string name="statistics_title">X O X O X</string>
 </resources>
