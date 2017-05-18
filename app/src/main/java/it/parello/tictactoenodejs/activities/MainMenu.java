@@ -28,8 +28,8 @@ import static android.view.View.VISIBLE;
 public class MainMenu extends MyAppActivity implements
         Statistics.OnFragmentInteractionListener, MenuFragment.OnMenuFragmentListener,AsyncResponse {
 
-//    public ProgressBar progressBar;
-    private static final String URL = "http://192.168.1.220:8888/async/gamerequest";
+//    public ProgressBar mpProgressBar;
+    public static final String GAME_REQUEST_URL = "http://192.168.1.220:8888/async/gamerequest";
     Intent intent;
     private static final String TAG = "MainMenuActivity";
     ProgressBar progressBar;
@@ -39,7 +39,7 @@ public class MainMenu extends MyAppActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        progressBar = (ProgressBar) findViewById(R.id.progresss_bar);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         Fragment menuFragment = new MenuFragment();
         if (null == savedInstanceState) {
             getFragmentManager().beginTransaction().add(R.id.main_fragment, menuFragment).addToBackStack(null).commit();
@@ -89,7 +89,7 @@ public class MainMenu extends MyAppActivity implements
         progressBar.setVisibility(VISIBLE);
         OnlineGameRequestTask sgr = new OnlineGameRequestTask(this);
         Log.d(TAG,"Sending Online Game Request Async Task");
-        sgr.execute(URL, myToken);
+        sgr.execute(GAME_REQUEST_URL, myToken);
     }
 
     @Override

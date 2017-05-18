@@ -2,6 +2,8 @@ package it.parello.tictactoenodejs.async;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,6 +12,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import it.parello.tictactoenodejs.R;
+import it.parello.tictactoenodejs.activities.MultiPlayer;
+
 /**
  * Created by edoar on 12-May-17.
  */
@@ -17,6 +22,18 @@ import java.net.URL;
 public class RematchRequestTask extends AsyncTask <String, Void, String> {
 
     private static final String TAG = "RematchRequestTask";
+
+    MultiPlayer context;
+    ProgressBar progressBar;
+
+    public RematchRequestTask(MultiPlayer context){
+        this.context = context;
+    }
+
+    protected void onPreExecute(){
+        progressBar = (ProgressBar) context.findViewById(R.id.progress_bar_multiplayer);
+        progressBar.setVisibility(View.VISIBLE);
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -55,5 +72,8 @@ public class RematchRequestTask extends AsyncTask <String, Void, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         Log.e(TAG, result);
+        context.runOnUiThread(()->{
+            progressBar.setVisibility(View.GONE);
+        });
     }
 }

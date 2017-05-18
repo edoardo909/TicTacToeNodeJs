@@ -74,7 +74,6 @@ server.post("/async/forfeit", function(request, response){
 
 server.post("/async/rematch", function(request, response){
     gameController.rematch(request, response);
-    if(!response)
     response.send("intercepting rematch request")
 });
 

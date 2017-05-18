@@ -21,6 +21,8 @@ import it.parello.tictactoenodejs.R;
 import it.parello.tictactoenodejs.activities.MultiPlayer;
 import it.parello.tictactoenodejs.activities.SinglePlayer;
 
+import static it.parello.tictactoenodejs.activities.MultiPlayer.isActive;
+
 
 /**
  * Created by Parello on 20/04/2017.
@@ -34,6 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final String INTENT_FILTER_ERROR = "it.parello.tictactoenodejs.ERROR";
     public static final String INTENT_FILTER_GAME_END = "it.parello.tictactoenodejs.GAME_END";
     public static final String INTENT_FILTER_DATA = "it.parello.tictactoenodejs.DATA";
+    public static final String INTENT_FILTER_REMATCH = "it.parello.tictactoenodejs.REMATCH";
     public static final String INTENT_FILTER_WINNER = "it.parello.tictactoenodejs.WINNER";
     public static int instanceId;
 
@@ -43,8 +46,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-
-        //TODO se arriva un remoteMessage.getData() : gestiscilo in modo appropriato
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
@@ -57,7 +58,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     String marker = remoteMessage.getData().get("marker");
                     intent.putExtra("playerMarker", marker);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    if(isActive){
+                        Intent intent = new Intent(INTENT_FILTER_REMATCH, null, getApplicationContext(), MultiPlayer.class);
+                        intent.putExtra("playerMarker", marker);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                        startActivity(intent);
+                    }else{
+                        startActivity(intent);
+                    }
             }else if(remoteMessage.getData().containsValue("ERROR") && remoteMessage.getData().containsValue("500")){
                     intent = new Intent(INTENT_FILTER_ERROR);
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
@@ -78,6 +87,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent = new Intent(INTENT_FILTER_WINNER);
                 intent.putExtra("winner", winner);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+            }else if (remoteMessage.getData().containsKey(("rematch"))){
+
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {

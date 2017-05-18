@@ -194,7 +194,9 @@ function passGameDataToPlayers(request, response, gameData){
                 }
                 if(!isGameOver(request,response, playersIDs, board_data)){
                     notifications.sendGameDataToOtherPlayer(request, response, opponentID, gameDataAfter);
+                    console.log("GAME NOT OVER")
                 }else{
+                    notifications.sendGameDataToOtherPlayer(request, response, opponentID, gameDataAfter);
                     console.log("GAME OVER")
                 }
             }
@@ -244,7 +246,8 @@ function rematch(request, response){
     		 collection.findOne({_id: parseInt(requestingPlayerGameID)}, function(err, result){
                 if(err){
                     response.send("no_rematch");
-                }else{
+                    return err;
+                }else if (result){
                     var playersIDs = [result.player1,result.player2];
                     var rematchMessage = {
                         data: {
